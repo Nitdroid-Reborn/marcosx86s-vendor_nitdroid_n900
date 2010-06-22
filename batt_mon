@@ -1,0 +1,77 @@
+#!/system/bin/sh
+
+# Set up initfs environment
+
+hwclock --hctosys
+
+chroot /mnt/initfs mount -n -t proc proc /proc
+
+chroot /mnt/initfs mount -n -t sysfs sysfs /sys
+
+mount --bind /dev /mnt/initfs/dev
+
+chroot /mnt/initfs mount -n -t tmpfs -o size=1M,noatime tmpfs /tmp
+
+chroot /mnt/initfs mount -n -t tmpfs -o size=256k,mode=0755,nosuid,noatime tmpfs /var/run
+
+# Check current boot state. Could be 'USER'
+export BOOTSTATE=`chroot /mnt/initfs getbootstate 2>/dev/null`
+
+touch /mnt/initfs/tmp/$BOOTSTATE
+
+echo $BOOTSTATE > /mnt/initfs/tmp/STATE
+
+chroot /mnt/initfs /sbin/dsme -p /usr/lib/dsme/libstartup.so &
+
+until chroot /mnt/initfs waitfordsme; do
+
+sleep 1
+
+done
+
+LOGGER='/usr/bin/logger -s -tBME'
+
+SYSFS_VBUS_PATH=/sys/class/i2c-adapter/i2c-1/1-0048/twl4030_usb/vbus
+
+
+# check dead battery pre-charge
+
+if [ $(cat $SYSFS_VBUS_PATH) -eq 1 ]; then
+
+chroot /mnt/initfs /usr/sbin/bme_RX-51 -b
+
+case $? in
+
+0)
+
+$LOGGER -pdaemon.notice 'precharge -> ok'
+
+;;
+
+2)
+
+$LOGGER -pdaemon.crit 'precharge -> power off'
+
+exit 1
+
+;;
+
+*)
+
+$LOGGER -pdaemon.crit 'precharge -> failure'
+
+;;
+
+esac
+
+fi
+
+# Start battery management entity
+chroot /mnt/initfs /usr/sbin/bme_RX-51 &
+
+# Bonus: To get hald-addon-bme working (bad bad voodoo). We need to test if toggles_w's hald-addon-bme replacement works on N900.
+# dpkg-repack hald-addon-bme from rootfs and dpkg -i it
+mount --bind / /mnt/initfs/mnt/new_root
+chroot /mnt/initfs ln -s /mnt/new_root/tmp/bme-dbus-socket /tmp/bme-dbus-socket
+ln -s /mnt/initfs/tmp/.bmesrv /tmp/.bmesrv
+ln -s /mnt/initfs/tmp/dsmesock /tmp/dsmesock
