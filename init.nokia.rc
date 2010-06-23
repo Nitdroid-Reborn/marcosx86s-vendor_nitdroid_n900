@@ -18,11 +18,36 @@ on boot
     chown system system /data/app
     chmod 0771 /data/app
 
+    # give access to wpa_supplicant.conf for backup and restore to wifi
+    mkdir /system/etc/wifi 0770 wifi wifi
+    chmod 0770 /system/etc/wifi
+    chmod 0660 /system/etc/wifi/wpa_supplicant.conf
+    chown wifi wifi /system/etc/wifi/wpa_supplicant.conf
+    mkdir /data/misc/wifi 0770 wifi wifi
+    mkdir /data/misc/wifi/sockets 0770 wifi wifi
+    chmod 0770 /data/misc/wifi
+    chmod 0660 /data/misc/wifi/wpa_supplicant.conf
+    # Used by wifi.c wpa_ctrl_open
+    mkdir /data/system/wpa_supplicant 0777 wifi wifi
+    chmod 0777 /data/system/wpa_supplicant
+    chown wifi wifi /data/system/wpa_supplicant
+
+
+
+    mkdir /system/etc/wifi 0770 wifi wifi
+    chmod 0775 /system/etc/wifi
+    chmod 0664 /system/etc/wifi/wpa_supplicant.conf
+    chown wifi wifi /system/etc/wifi/wpa_supplicant.conf
+
     mkdir /data/misc/wifi 0770 wifi wifi
     mkdir /data/misc/wifi/sockets 0770 wifi wifi
     mkdir /data/system/wpa_supplicant 0770 wifi wifi
     mkdir /data/misc/dhcp 0770 dhcp dhcp
     chown dhcp dhcp /data/misc/dhcp
+
+    mkdir /data/system/wpa_supplicant 0771 wifi wifi
+    chmod 0771 /data/system/wpa_supplicant
+    chown wifi wifi /data/system/wpa_supplicant
 
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
@@ -33,13 +58,19 @@ on boot
     write /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq 600000
     write /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_governor ondemand
 
+service rm-old-log /system/bin/rm /boot.log
+    oneshot
+
+service logcat /system/bin/logcat -v long -f /boot.log
+    oneshot
+
+#service module_loader /system/bin/logwrapper /system/bin/load_modules.sh
+#    oneshot
+
 service nokia-setup /system/bin/logwrapper /system/etc/init.nokia.sh
     oneshot
 
 service batt_mon /system/bin/logwrapper /system/bin/batt_mon
-    oneshot
-
-service module_loader /system/bin/logwrapper /system/bin/load_modules.sh
     oneshot
 
 #service wlan_loader /system/bin/logwrapper /system/bin/wlan_loader
@@ -49,11 +80,12 @@ service module_loader /system/bin/logwrapper /system/bin/load_modules.sh
 on property:init.svc.wpa_supplicant=stopped
     stop dhcpcd
 
-service wpa_supplicant /system/bin/wpa_supplicant -Dwext -iwlan0 -c/data/misc/wifi/wpa_supplicant.conf
+service wpa_supplicant /system/bin/wpa_supplicant -iwlan0 -c/data/misc/wifi/wpa_supplicant.conf -dd -K -Dwext
     group wifi inet
     disabled
     oneshot
 
 service dhcpcd /system/bin/logwrapper /system/bin/dhcpcd -d wlan0
+    group system dhcp
     disabled
     oneshot

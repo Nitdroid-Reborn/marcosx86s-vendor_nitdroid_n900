@@ -5,8 +5,9 @@ sysclktz 0
 
 loglevel 3
 
+
 # setup the global environment
-    export PATH /sbin:/system/sbin:/system/bin:/system/xbin:/system/bin/busybox/sbin:/system/bin/busybox/bin
+    export PATH /sbin:/system/sbin:/system/bin:/system/xbin:/bin
     export LD_LIBRARY_PATH /system/lib
     export ANDROID_BOOTLOGO 1
     export ANDROID_ROOT /system
@@ -17,10 +18,11 @@ loglevel 3
 
 # Backward compatibility
     symlink /system/etc /etc
-    symlink /sys/kernel/debug /d
+    #symlink /sys/kernel/debug /d
 
 # create mountpoints and mount tmpfs on sqlite_stmt_journals
     mkdir /sdcard 0000 system system
+    mkdir /sdcard2 0000 system system
     mkdir /system
     mkdir /data 0771 system system
     mkdir /cache 0770 system cache
@@ -29,7 +31,7 @@ loglevel 3
     mount tmpfs tmpfs /sqlite_stmt_journals size=4m
 
     mount rootfs rootfs / rw remount
-
+    
     write /proc/sys/kernel/panic_on_oops 1
     write /proc/sys/kernel/hung_task_timeout_secs 0
     write /proc/cpu/alignment 4
@@ -44,6 +46,7 @@ loglevel 3
     chown sytem system /dev/cpuctl
     chown system system /dev/cpuctl/tasks
     chmod 0777 /dev/cpuctl/tasks
+    chmod 0777 /dev/cpuctl/bg_non_interactive/tasks
     write /dev/cpuctl/cpu.shares 1024
 
     mkdir /dev/cpuctl/fg_boost
@@ -107,8 +110,12 @@ loglevel 3
     mkdir /data/misc/vpn/profiles 0770 system system
     # give system access to wpa_supplicant.conf for backup and restore
     mkdir /data/misc/wifi 0770 wifi wifi
+    mkdir /data/misc/wifi/sockets 0770 wifi wifi
     chmod 0770 /data/misc/wifi
-    chmod 0660 /data/misc/wifi/wpa_supplicant.conf
+    chmod 0660 /data/misc/wifI/wpa_supplicant.conf
+    chown wifi wifi /data/misc/wifi
+    chown wifi wifi /data/misc/wifi/wpa_supplicant.conf
+
     mkdir /data/local 0771 shell shell
     mkdir /data/local/tmp 0771 shell shell
     mkdir /data/data 0771 system system
@@ -142,6 +149,8 @@ on boot
     ifup lo
     hostname localhost
     domainname localdomain
+    setprop net.dns1 8.8.8.8
+    setprop net.dns2 8.8.4.4
 
 # set RLIMIT_NICE to allow priorities from 19 to -20
     setrlimit 13 40 40
@@ -167,6 +176,20 @@ on boot
     setprop ro.HIDDEN_APP_MEM 5120
     setprop ro.CONTENT_PROVIDER_MEM 5632
     setprop ro.EMPTY_APP_MEM 6144
+
+# battery status
+    setprop ro.sys.fs.power_supply.ac /AC0
+    setprop ro.sys.fs.power_supply.bat /bq27200-0
+    #setprop #ro.sys.fs.power_supply.ac.feature.online /online
+    setprop #ro.sys.fs.power_supply.bat.feature.status /status
+    setprop ro.sys.fs.power_supply.bat.feature.present /present
+    setprop ro.sys.fs.power_supply.bat.feature.capacity.now /capacity
+    #setprop #ro.sys.fs.power_supply.bat.feature.capacity.full /charge_full
+    setprop ro.sys.fs.power_supply.bat.feature.voltage.now /voltage_now
+    #setprop #ro.sys.fs.power_supply.bat.feature.voltage.full /voltage_full
+    #setprop #ro.sys.fs.power_supply.bat.feature.tech=/technology
+    #setprop #ro.sys.fs.power_supply.bat.features.bat.health is not supported
+    setprop ro.sys.fs.power_supply.bat.features.bat.temperature /temp
 
 # Write value must be consistent with the above properties.
 # Note that the driver only supports 6 slots, so we have HOME_APP at the
@@ -196,6 +219,12 @@ on boot
     chmod 0660 /sys/power/state
     chmod 0660 /sys/power/wake_lock
     chmod 0660 /sys/power/wake_unlock
+    chmod 0777 /dev/pts/0
+    chmod 0777 /dev/pts/1
+    chmod 0777 /dev/pts/2
+    chmod 0777 /dev/pts/3
+    chmod 0777 /dev/pts/4
+    chmod 0777 /dev/pts/5
     chown system system /sys/class/timed_output/vibrator/enable
     chown system system /sys/class/leds/keyboard-backlight/brightness
     chown system system /sys/class/leds/lcd-backlight/brightness
@@ -235,8 +264,16 @@ on boot
 
 ## Daemon processes to be run by init.
 ##
+#service console /system/bin/sh /system/bin/logcat -f /boot.log
 service console /system/bin/sh
     console
+
+#service batt_mon /system/bin/batt_mon                                          
+#    oneshot                                                                                           
+                                                                                                      
+service module_loader /system/bin/load_modules.sh                              
+    oneshot                                                                                           
+
 
 # adbd is controlled by the persist.service.adb.enable system property
 service adbd /sbin/adbd
@@ -260,17 +297,33 @@ service servicemanager /system/bin/servicemanager
 
 service vold /system/bin/vold
     socket vold stream 0660 root mount
+    disabled
 
 service nexus /system/bin/nexus
     socket nexus stream 0660 root system
     disabled
 
-#service mountd /system/bin/mountd
-#    socket mountd stream 0660 root mount
+service mountd /system/bin/mountd
+    socket mountd stream 0660 root mount
 
 service debuggerd /system/bin/debuggerd
 
-service ril-daemon /system/bin/rild
+service pnatd /system/bin/pnatd.sh
+oneshot
+
+service ril-daemon /system/bin/rild -l /system/lib/libreference-ril.so -- -d /dev/pts/0 -3
+    socket rild stream 660 root radio
+    socket rild-debug stream 660 radio system
+    user root
+    group radio cache inet misc audio
+
+service ril-daemon2 /system/bin/rild -l /system/lib/libreference-ril.so -- -d /dev/pts/1 -3
+    socket rild stream 660 root radio
+    socket rild-debug stream 660 radio system
+    user root
+    group radio cache inet misc audio
+
+service ril-daemon3 /system/bin/rild -l /system/lib/libreference-ril.so -- -d /dev/pts/2 -3
     socket rild stream 660 root radio
     socket rild-debug stream 660 radio system
     user root
@@ -363,3 +416,4 @@ service dumpstate /system/bin/dumpstate -s
     socket dumpstate stream 0660 shell log
     disabled
     oneshot
+
