@@ -6,6 +6,7 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/generic.mk)
 
 # This is the list of apps included in the generic AOSP build
 PRODUCT_PACKAGES += \
+    Provision \
     DeskClock \
     DownloadProvider \
     Gallery3D \
