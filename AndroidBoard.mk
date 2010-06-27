@@ -24,9 +24,9 @@ ALL_PREBUILT += $(file)
 $(file) : $(LOCAL_PATH)/init.nokia.rc | $(ACP)
 	$(transform-prebuilt-to-target)
 
-file := $(TARGET_ROOT_OUT)/system/etc/vold.conf
+file := $(TARGET_ROOT_OUT)/system/etc/vold.fstab
 ALL_PREBUILT += $(file)
-$(file) : $(LOCAL_PATH)/etc/vold.conf | $(ACP)
+$(file) : $(LOCAL_PATH)/etc/vold.fstab | $(ACP)
 	$(transform-prebuilt-to-target)
 
 file := $(TARGET_ROOT_OUT)/system/etc/asound.conf

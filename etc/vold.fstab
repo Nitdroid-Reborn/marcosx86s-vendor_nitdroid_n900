@@ -1,0 +1,1 @@
+dev_mount sdcard /sdcard 1 /block/mmcblk0
