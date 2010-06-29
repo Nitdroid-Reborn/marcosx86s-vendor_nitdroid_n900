@@ -8,10 +8,7 @@ on init
 on boot
     chown system system /sys/class/backlight/acx565akm/brightness
 
-# keyboard leds
-    insmod /system/lib/modules/led-class.ko
-    insmod /system/lib/modules/leds-lp5523.ko
-    
+    # keyboard leds
     chown system system /sys/class/leds/lp5523\:kb1/brightness
     chown system system /sys/class/leds/lp5523\:kb2/brightness
     chown system system /sys/class/leds/lp5523\:kb3/brightness
@@ -75,6 +72,17 @@ on boot
     write /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_min_freq 250000
     write /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq 600000
     write /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_governor ondemand
+
+    # battery status
+    setprop ro.sys.fs.power_supply.ac /AC0
+    setprop ro.sys.fs.power_supply.bat /bq27200-0
+    #setprop ro.sys.fs.power_supply.ac.feature.online /online
+    setprop ro.sys.fs.power_supply.bat.feature.status /status
+    setprop ro.sys.fs.power_supply.bat.feature.present /present
+    setprop ro.sys.fs.power_supply.bat.feature.capacity.now /capacity
+    setprop ro.sys.fs.power_supply.bat.feature.voltage.now /voltage_now
+    setprop ro.sys.fs.power_supply.bat.features.bat.temperature /temp
+
 
 service logcat /system/bin/logcat -v long -f /boot.log
     oneshot

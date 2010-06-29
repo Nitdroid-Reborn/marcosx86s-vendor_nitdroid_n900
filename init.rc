@@ -176,20 +176,6 @@ on boot
     setprop ro.CONTENT_PROVIDER_MEM 5632
     setprop ro.EMPTY_APP_MEM 6144
 
-# battery status
-    setprop ro.sys.fs.power_supply.ac /AC0
-    setprop ro.sys.fs.power_supply.bat /bq27200-0
-    #setprop #ro.sys.fs.power_supply.ac.feature.online /online
-    setprop #ro.sys.fs.power_supply.bat.feature.status /status
-    setprop ro.sys.fs.power_supply.bat.feature.present /present
-    setprop ro.sys.fs.power_supply.bat.feature.capacity.now /capacity
-    #setprop #ro.sys.fs.power_supply.bat.feature.capacity.full /charge_full
-    setprop ro.sys.fs.power_supply.bat.feature.voltage.now /voltage_now
-    #setprop #ro.sys.fs.power_supply.bat.feature.voltage.full /voltage_full
-    #setprop #ro.sys.fs.power_supply.bat.feature.tech=/technology
-    #setprop #ro.sys.fs.power_supply.bat.features.bat.health is not supported
-    setprop ro.sys.fs.power_supply.bat.features.bat.temperature /temp
-
 # Write value must be consistent with the above properties.
 # Note that the driver only supports 6 slots, so we have HOME_APP at the
 # same memory level as services.
