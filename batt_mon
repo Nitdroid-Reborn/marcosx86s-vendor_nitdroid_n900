@@ -1,35 +1,36 @@
-#!/system/bin/sh
+#!/bin/sh
 
 # Set up initfs environment
 
-hwclock --hctosys
+#hwclock --hctosys
+alias chroot='/usr/sbin/chroot'
 
-chroot /mnt/initfs mount -n -t proc proc /proc
+/usr/sbin/chroot /mnt/initfs mount -n -t proc proc /proc
+/usr/sbin/chroot /mnt/initfs mount -n -t sysfs sysfs /sys
 
-chroot /mnt/initfs mount -n -t sysfs sysfs /sys
+/bin/busybox mount --bind /dev /mnt/initfs/dev
 
-mount --bind /dev /mnt/initfs/dev
+/bin/busybox mknod /mnt/initfs/dev/watchdog c 10 130
+/bin/busybox mknod /mnt/initfs/dev/twl4030-adc c 10 58
+/bin/busybox mknod /mnt/initfs/dev/twl4030_wdt c 10 142
+/bin/busybox mknod /mnt/initfs/dev/i2c-2 c 89 2
+/bin/busybox mknod /mnt/initfs/dev/mtd1 c 90 2
 
-chroot /mnt/initfs mount -n -t tmpfs -o size=1M,noatime tmpfs /tmp
-
-chroot /mnt/initfs mount -n -t tmpfs -o size=256k,mode=0755,nosuid,noatime tmpfs /var/run
+/usr/sbin/chroot /mnt/initfs mount -n -t tmpfs -o size=1M,noatime tmpfs /tmp
+/usr/sbin/chroot /mnt/initfs mount -n -t tmpfs -o size=256k,mode=0755,nosuid,noatime tmpfs /var/run
 
 # Check current boot state. Could be 'USER'
-export BOOTSTATE=`chroot /mnt/initfs getbootstate 2>/dev/null`
+export BOOTSTATE=`/usr/sbin/chroot /mnt/initfs /usr/sbin/getbootstate 2>/dev/null`
 
 touch /mnt/initfs/tmp/$BOOTSTATE
 
 echo $BOOTSTATE > /mnt/initfs/tmp/STATE
 
-chroot /mnt/initfs /sbin/dsme -p /usr/lib/dsme/libstartup.so &
+/usr/sbin/chroot /mnt/initfs /sbin/dsme -p /usr/lib/dsme/libstartup.so &
 
-until chroot /mnt/initfs waitfordsme; do
+until /usr/sbin/chroot /mnt/initfs /usr/sbin/waitfordsme; do sleep 1; done
 
-sleep 1
-
-done
-
-LOGGER='/usr/bin/logger -s -tBME'
+LOGGER='/usr/sbin/chroot /mnt/initfs /usr/bin/logger -s -tBME'
 
 SYSFS_VBUS_PATH=/sys/class/i2c-adapter/i2c-1/1-0048/twl4030_usb/vbus
 
@@ -38,7 +39,7 @@ SYSFS_VBUS_PATH=/sys/class/i2c-adapter/i2c-1/1-0048/twl4030_usb/vbus
 
 if [ $(cat $SYSFS_VBUS_PATH) -eq 1 ]; then
 
-chroot /mnt/initfs /usr/sbin/bme_RX-51 -b
+/usr/sbin/chroot /mnt/initfs /usr/sbin/bme_RX-51 -b
 
 case $? in
 
@@ -66,12 +67,19 @@ esac
 
 fi
 
+STRACE='/usr/bin/strace -vv'
+
 # Start battery management entity
-chroot /mnt/initfs /usr/sbin/bme_RX-51 &
+/usr/sbin/chroot /mnt/initfs $(STRACE) /usr/sbin/bme_RX-51 2>&1 > /bmelog &
 
 # Bonus: To get hald-addon-bme working (bad bad voodoo). We need to test if toggles_w's hald-addon-bme replacement works on N900.
 # dpkg-repack hald-addon-bme from rootfs and dpkg -i it
-mount --bind / /mnt/initfs/mnt/new_root
-chroot /mnt/initfs ln -s /mnt/new_root/tmp/bme-dbus-socket /tmp/bme-dbus-socket
-ln -s /mnt/initfs/tmp/.bmesrv /tmp/.bmesrv
-ln -s /mnt/initfs/tmp/dsmesock /tmp/dsmesock
+#mount --bind / /mnt/initfs/mnt/new_root
+#chroot /mnt/initfs ln -s /mnt/new_root/tmp/bme-dbus-socket /tmp/bme-dbus-socket
+#ln -s /mnt/initfs/tmp/.bmesrv /tmp/.bmesrv
+#ln -s /mnt/initfs/tmp/dsmesock /tmp/dsmesock
+
+sleep 2
+# battery related
+insmod /system/lib/modules/power_supply.ko
+insmod /system/lib/modules/bq27x00_battery.ko
