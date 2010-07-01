@@ -8,7 +8,7 @@
 
 # battery related
     insmod /system/lib/modules/power_supply.ko
-    insmod /system/lib/modules/bq27x00_battery.ko
+    #insmod /system/lib/modules/bq27x00_battery.ko
 
 # leds
     insmod /system/lib/modules/led-class.ko
@@ -126,6 +126,9 @@
 #    insmod /system/lib/modules/omaplfb.ko
 #    insmod /system/lib/modules/sdio_uart.ko
 #    insmod /system/lib/modules/omap34xxcam-mod.ko
+
+# accelerometer
+    insmod /system/lib/modules/lis302dl.ko
 
 # adb
 #    insmod /system/lib/modules/g_android.ko
