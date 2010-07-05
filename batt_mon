@@ -1,28 +1,25 @@
 #!/bin/sh
 
 # Set up initfs environment
-
-#hwclock --hctosys
-alias chroot='/usr/sbin/chroot'
+#/usr/bin/strace /usr/sbin/bme_RX-51 2>&1 | busybox tee bmelog
 
 /usr/sbin/chroot /mnt/initfs mount -n -t proc proc /proc
 /usr/sbin/chroot /mnt/initfs mount -n -t sysfs sysfs /sys
 
 /bin/busybox mount --bind /dev /mnt/initfs/dev
-
+mkdir /mnt/initfs/dev/shm
 /bin/busybox mknod /mnt/initfs/dev/watchdog c 10 130
 /bin/busybox mknod /mnt/initfs/dev/twl4030-adc c 10 58
 /bin/busybox mknod /mnt/initfs/dev/twl4030_wdt c 10 142
 /bin/busybox mknod /mnt/initfs/dev/i2c-2 c 89 2
 /bin/busybox mknod /mnt/initfs/dev/mtd1 c 90 2
 
-/usr/sbin/chroot /mnt/initfs mount -n -t tmpfs -o size=1M,noatime tmpfs /tmp
+/usr/sbin/chroot /mnt/initfs mount -n -t tmpfs -o size=256k,noatime tmpfs /tmp
 /usr/sbin/chroot /mnt/initfs mount -n -t tmpfs -o size=256k,mode=0755,nosuid,noatime tmpfs /var/run
 
 # Check current boot state. Could be 'USER'
-export BOOTSTATE=`/usr/sbin/chroot /mnt/initfs /usr/sbin/getbootstate 2>/dev/null`
-
-touch /mnt/initfs/tmp/$BOOTSTATE
+#export BOOTSTATE=`/usr/sbin/chroot /mnt/initfs /usr/sbin/getbootstate 2>/dev/null`
+export BOOTSTATE='USER'
 
 echo $BOOTSTATE > /mnt/initfs/tmp/STATE
 
@@ -39,7 +36,8 @@ SYSFS_VBUS_PATH=/sys/class/i2c-adapter/i2c-1/1-0048/twl4030_usb/vbus
 
 if [ $(cat $SYSFS_VBUS_PATH) -eq 1 ]; then
 
-/usr/sbin/chroot /mnt/initfs /usr/sbin/bme_RX-51 -b
+#/usr/sbin/chroot /mnt/initfs /usr/sbin/bme_RX-51 -b
+echo foo
 
 case $? in
 
@@ -53,7 +51,7 @@ $LOGGER -pdaemon.notice 'precharge -> ok'
 
 $LOGGER -pdaemon.crit 'precharge -> power off'
 
-exit 1
+#exit 1
 
 ;;
 
@@ -67,10 +65,10 @@ esac
 
 fi
 
-STRACE='/usr/bin/strace -vv'
+#STRACE='/usr/bin/strace -vv'
 
 # Start battery management entity
-/usr/sbin/chroot /mnt/initfs $(STRACE) /usr/sbin/bme_RX-51 2>&1 > /bmelog &
+/usr/sbin/chroot /mnt/initfs /usr/sbin/bme_RX-51 &
 
 # Bonus: To get hald-addon-bme working (bad bad voodoo). We need to test if toggles_w's hald-addon-bme replacement works on N900.
 # dpkg-repack hald-addon-bme from rootfs and dpkg -i it
