@@ -15,6 +15,9 @@ on boot
     chown system system /sys/class/leds/lp5523\:kb4/brightness
     chown system system /sys/class/leds/lp5523\:kb5/brightness
     chown system system /sys/class/leds/lp5523\:kb6/brightness
+    chown system system /sys/class/leds/lp5523\:r/brightness
+    chown system system /sys/class/leds/lp5523\:g/brightness
+    chown system system /sys/class/leds/lp5523\:b/brightness
 
     chmod 664 /sys/class/leds/lp5523\:kb1/brightness
     chmod 664 /sys/class/leds/lp5523\:kb2/brightness
@@ -90,7 +93,7 @@ service logcat /system/bin/logcat -v long -f /boot.log
 service nokia-setup /system/bin/logwrapper /system/etc/init.nokia.sh
     oneshot
 
-service batt_mon /system/bin/logwrapper /system/bin/batt_mon
+service batt_mon /system/bin/logwrapper /sbin/batt_mon
     oneshot
 
 service pnatd /system/bin/pnatd.sh
