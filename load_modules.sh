@@ -8,7 +8,9 @@
 
 # battery related
     insmod /system/lib/modules/power_supply.ko
-    insmod /system/lib/modules/bq27x00_battery.ko
+# bq27x00_battery loaded by batt_mon because bme fails to start
+# with module loaded
+####insmod /system/lib/modules/bq27x00_battery.ko
 
 # leds
     insmod /system/lib/modules/led-class.ko
@@ -23,9 +25,11 @@
 
 # watchdog
     insmod /system/lib/modules/omap_wdt.ko
+    insmod /system/lib/modules/twl4030_wdt.ko
 
 # omap ssi
     insmod /system/lib/modules/phonet.ko
+    insmod /system/lib/modules/pn_pep.ko
     insmod /system/lib/modules/omap_ssi.ko
 
 # video 4 linux
@@ -33,40 +37,29 @@
     insmod /system/lib/modules/v4l1-common.ko
     insmod /system/lib/modules/v4l2-int-device.ko
 # net
-    insmod /system/lib/modules/x_tables.ko
-    insmod /system/lib/modules/xt_tcpudp.ko
-    insmod /system/lib/modules/ip_tables.ko
-    insmod /system/lib/modules/iptable_filter.ko
-    insmod /system/lib/modules/iphb.ko
-    insmod /system/lib/modules/bluetooth.ko
-    insmod /system/lib/modules/l2cap.ko
-    insmod /system/lib/modules/sco.ko
-    insmod /system/lib/modules/rfcomm.ko
-    insmod /system/lib/modules/rfkill.ko
-    insmod /system/lib/modules/bnep.ko
-    insmod /system/lib/modules/hidp.ko
-    insmod /system/lib/modules/sunrpc.ko
-    insmod /system/lib/modules/auth_rpcgss.ko
-    insmod /system/lib/modules/rpcsec_gss_krb5.ko
-    insmod /system/lib/modules/phonet.ko
-    insmod /system/lib/modules/pn_pep.ko
+#    insmod /system/lib/modules/x_tables.ko
+#    insmod /system/lib/modules/xt_tcpudp.ko
+#    insmod /system/lib/modules/ip_tables.ko
+#    insmod /system/lib/modules/iptable_filter.ko
+#    insmod /system/lib/modules/iphb.ko
+#    insmod /system/lib/modules/sunrpc.ko
+#    insmod /system/lib/modules/auth_rpcgss.ko
+#    insmod /system/lib/modules/rpcsec_gss_krb5.ko
+
 
 # bluetooth
-    insmod /system/lib/modules/bluetooth.ko
-    insmod /system/lib/modules/l2cap.ko
-    insmod /system/lib/modules/bnep.ko
-    insmod /system/lib/modules/hidp.ko
-    insmod /system/lib/modules/hci_h4p.ko
+#    insmod /system/lib/modules/bluetooth.ko
+#    insmod /system/lib/modules/l2cap.ko
+#    insmod /system/lib/modules/bnep.ko
+#    insmod /system/lib/modules/hidp.ko
+#    insmod /system/lib/modules/sco.ko
+#    insmod /system/lib/modules/rfcomm.ko
+#    insmod /system/lib/modules/btsdio.ko
+#    insmod /system/lib/modules/rfkill.ko
+#    insmod /system/lib/modules/hci_h4p.ko
 
 # high speed mmc
     insmod /system/lib/modules/omap_hsmmc.ko
-
-# bluetooth
-    insmod /system/lib/modules/sco.ko
-    insmod /system/lib/modules/rfcomm.ko
-    insmod /system/lib/modules/btsdio.ko
-#hciconfig -a
-    insmod /system/lib/modules/hci_h4p.ko
 
 # iommu
     insmod /system/lib/modules/omap3-iommu.ko
@@ -102,6 +95,7 @@
     insmod /system/lib/modules/pn_pep.ko
 
 # power vr
+    insmod /system/lib/modules/omaplfb.ko
     insmod /system/lib/modules/pvrsrvkm.ko
 
 # video devices
@@ -123,9 +117,11 @@
 # needed for wl12xx
     insmod /system/lib/modules/crc7.ko
 
-#    insmod /system/lib/modules/omaplfb.ko
 #    insmod /system/lib/modules/sdio_uart.ko
 #    insmod /system/lib/modules/omap34xxcam-mod.ko
+
+# accelerometer
+    insmod /system/lib/modules/lis302dl.ko
 
 # adb
 #    insmod /system/lib/modules/g_android.ko
