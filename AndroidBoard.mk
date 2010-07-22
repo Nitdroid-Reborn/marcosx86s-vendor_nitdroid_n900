@@ -14,6 +14,11 @@ ALL_PREBUILT += $(file)
 $(file) : $(LOCAL_PATH)/triton2-pwrbutton.kl | $(ACP)
 	$(transform-prebuilt-to-target)
 
+file := $(TARGET_OUT_KEYLAYOUT)/gpio-keys.kl
+ALL_PREBUILT += $(file)
+$(file) : $(LOCAL_PATH)/gpio-keys.kl | $(ACP)
+        $(transform-prebuilt-to-target)
+
 file := $(TARGET_ROOT_OUT)/init.rc
 ALL_PREBUILT += $(file)
 $(file) : $(LOCAL_PATH)/init.rc | $(ACP)
@@ -52,9 +57,4 @@ $(file) : $(LOCAL_PATH)/etc/wifi/wpa_supplicant.conf | $(ACP)
 file := $(TARGET_ROOT_OUT)/sbin/load_modules.sh
 ALL_PREBUILT += $(file)
 $(file) : $(LOCAL_PATH)/load_modules.sh | $(ACP)
-	$(transform-prebuilt-to-target)
-
-file := $(TARGET_ROOT_OUT)/sbin/batt_mon
-ALL_PREBUILT += $(file)
-$(file) : $(LOCAL_PATH)/batt_mon | $(ACP)
 	$(transform-prebuilt-to-target)

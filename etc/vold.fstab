@@ -1,1 +1,2 @@
-dev_mount sdcard /sdcard 1 /block/mmcblk0
+dev_mount sdcard /sdcard 1 /devices/platform/mmci-omap-hs.1/mmc_host/mmc1
+dev_mount sdcard_ext /ext_sd 1 /devices/platform/mmci-omap-hs.0/mmc_host/mmc0

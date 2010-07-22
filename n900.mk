@@ -27,4 +27,6 @@ PRODUCT_NAME := n900
 PRODUCT_MODEL := Nokia N900
 
 # This is a high DPI device, so add the hdpi pseudo-locale
-PRODUCT_LOCALES += hdpi
+PRODUCT_LOCALES := hdpi \
+                   mdpi
+

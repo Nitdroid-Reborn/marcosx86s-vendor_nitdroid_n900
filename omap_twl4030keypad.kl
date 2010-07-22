@@ -10,21 +10,20 @@ key 9     8
 key 10    9
 key 78    0
 key 158   BACK              WAKE_DROPPED
-key 14    BACK              WAKE_DROPPED
-key 230   SOFT_RIGHT        WAKE
+key 14    DEL              WAKE_DROPPED
 key 106   SOFT_RIGHT        WAKE
 key 107   ENDCALL           WAKE_DROPPED
 key 62    ENDCALL           WAKE_DROPPED
 key 60    ENDCALL           WAKE_DROPPED
-key 29    MENU              WAKE_DROPPED
+#key 29    MENU              WAKE_DROPPED
 key 139   MENU              WAKE_DROPPED
 key 59    MENU              WAKE_DROPPED
 key 127   SEARCH            WAKE_DROPPED
 key 217   SEARCH            WAKE_DROPPED
 key 228   POUND
-#key 66    POUND
+key 66    POUND
 key 227   STAR
-#key 65    STAR
+key 65    STAR
 key 231   CALL              WAKE_DROPPED
 key 102   CALL              WAKE_DROPPED
 key 232   DPAD_CENTER       WAKE_DROPPED
@@ -89,7 +88,7 @@ key 15    TAB
 key 57    SPACE
 key 150   EXPLORER
 key 155   ENVELOPE
-key 58	  CAPS
+key 29	  CAPS
 key 12    MINUS
 
 key 13    EQUALS
