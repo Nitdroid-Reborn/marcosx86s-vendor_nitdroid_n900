@@ -25,11 +25,8 @@ on boot
     chmod 664 /sys/class/leds/lp5523\:kb5/brightness
     chmod 664 /sys/class/leds/lp5523\:kb6/brightness
 
-    chown system system /sys/class/leds/cover/brightness
     chown system system /sys/class/graphics/fb0/blank
     chmod 0660 /sys/class/backlight/acx565akm/brightness
-    chmod 0660 /sys/class/leds/cover/brightness
-    chmod 0660 /sys/class/leds/keyboard/brightness
     chmod 0660 /sys/class/graphics/fb0/blank
 
     chown radio root /sys/devices/platform/gpio-switch/cmt_apeslpx/state
