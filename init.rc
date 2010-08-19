@@ -23,8 +23,6 @@ loglevel 3
     #mkdir /sdcard2 0000 system system
     mkdir /system
     mkdir /data 0771 system system
-    mkdir /cache 0770 system cache
-    mkdir /config 0500 root root
     mkdir /sqlite_stmt_journals 01777 root root
     mount tmpfs tmpfs /sqlite_stmt_journals size=4m
 
@@ -87,15 +85,6 @@ loglevel 3
 
     write /proc/apanic_console 1
 
-    # Same reason as /data above
-    #mount yaffs2 mtd@cache /cache nosuid nodev
-    chown system cache /cache
-    chmod 0770 /cache
-
-    # This may have been created by the recovery system with odd permissions
-    chown system system /cache/recovery
-    chmod 0770 /cache/recovery
-
     #change permissions on vmallocinfo so we can grab it from bugreports
     chown root log /proc/vmallocinfo
     chmod 0440 /proc/vmallocinfo
@@ -133,15 +122,10 @@ loglevel 3
     chown system system /data/dalvik-cache
     chmod 0771 /data/dalvik-cache
 
-    # create the lost+found directories, so as to enforce our permissions
-    mkdir /data/lost+found 0770
-    mkdir /cache/lost+found 0770
-
-    # double check the perms, in case lost+found already exists, and set owner
-    chown root root /data/lost+found
-    chmod 0770 /data/lost+found
-    chown root root /cache/lost+found
-    chmod 0770 /cache/lost+found
+    # create the log directory
+    mkdir /data/logs 0775
+    chown root root /data/logs
+    chmod 0775 /data/logs
 
 # change keypad permissions
     chmod 0644 /system/usr/keylayout/omap_twl4030keypad.kl
