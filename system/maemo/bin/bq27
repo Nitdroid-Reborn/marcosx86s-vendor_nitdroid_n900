@@ -1,0 +1,8 @@
+#!/bin/sh
+
+sleep 2
+
+echo "Loading bq27x00_battery.ko"
+exec insmod /system/lib/modules/current/bq27x00_battery.ko
+
+exit 0

@@ -1,0 +1,44 @@
+#!/bin/sh
+
+INIT_FUNC=init
+JAIL_FUNC=maemo
+
+
+init()
+{
+	if grep -F -q bq27x00_battery /proc/modules
+	then	
+		rmmod bq27x00_battery
+	fi
+}
+
+
+maemo()
+{
+	export BOOTSTATE=$(cat /tmp/STATE)
+
+	until waitfordsme
+	do
+		sleep 1
+	done
+
+	if [ -x /usr/bin/strace ]
+	then
+		N=1
+
+		while [ -e ${DROID}/data/logs/bme.strace.${N} ]
+		do
+			N=$( expr ${N} + 1 )
+		done
+
+		echo "Stracing BME to /data/logs/bme.strace.${N}"
+		exec strace -x -v -f -o ${DROID}/data/logs/bme.strace.${N} /usr/sbin/bme_RX-51
+
+	else
+		exec /usr/sbin/bme_RX-51
+	fi
+}
+
+
+source ${DROID}/system/maemo/etc/config.sh
+

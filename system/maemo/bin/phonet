@@ -1,0 +1,30 @@
+#!/bin/sh
+
+JAIL_FUNC=maemo
+
+
+maemo()
+{
+
+        echo inactive > /sys/devices/platform/gpio-switch/cmt_rst/state
+        echo inactive > /sys/devices/platform/gpio-switch/cmt_en/state
+        echo inactive > /sys/devices/platform/gpio-switch/cmt_apeslpx/state
+        echo inactive > /sys/devices/platform/gpio-switch/cmt_bsi/state
+        echo inactive > /sys/devices/platform/gpio-switch/cmt_rst_rq/state
+        echo active   > /sys/devices/platform/gpio-switch/cmt_rst/state
+	                                        
+	sleep 1
+	
+        echo inactive > /sys/devices/platform/gpio-switch/cmt_rst/state
+        echo active   > /sys/devices/platform/gpio-switch/cmt_bsi/state
+        echo active   > /sys/devices/platform/gpio-switch/cmt_en/state 
+        echo active   > /sys/devices/platform/gpio-switch/cmt_apeslpx/state
+        echo active > /sys/devices/platform/gpio-switch/cmt_rst_rq/state
+        echo active   > /sys/devices/platform/gpio-switch/cmt_rst/state
+
+	phonet -a 0x6C -i phonet0
+	ifconfig phonet0 up
+}
+
+
+source ${DROID}/system/maemo/etc/config.sh

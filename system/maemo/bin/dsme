@@ -1,0 +1,15 @@
+#!/bin/sh
+
+JAIL_FUNC=maemo
+
+
+maemo()
+{
+	export BOOTSTATE=$(cat /tmp/STATE)
+
+	exec /sbin/dsme -p /usr/lib/dsme/libstartup.so -l stdout -v 5
+}
+
+
+source ${DROID}/system/maemo/etc/config.sh
+

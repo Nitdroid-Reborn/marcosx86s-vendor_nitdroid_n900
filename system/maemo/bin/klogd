@@ -1,0 +1,12 @@
+#!/bin/sh
+
+JAIL_FUNC=maemo
+
+
+maemo()
+{
+	exec /sbin/klogd -f /dev/stdout -n
+}
+
+
+source ${DROID}/system/maemo/etc/config.sh
