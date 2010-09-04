@@ -1,3 +1,4 @@
-key 152	BACK
-key 372 HOME	WAKE
-key 101 MENU
+key 152	MENU    WAKE
+key 372 BACK
+key 167 HOME
+key 212 CAMERA
