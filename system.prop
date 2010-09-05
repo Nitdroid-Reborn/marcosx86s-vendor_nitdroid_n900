@@ -2,5 +2,5 @@
 # system.prop for n900
 #
 
-ro.sf.lcd_density=160
+ro.sf.lcd_density=240
 wifi.interface=wlan0
