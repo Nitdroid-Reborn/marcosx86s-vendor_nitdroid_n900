@@ -32,6 +32,7 @@ BUILD_FM_RADIO		:= true
 BOARD_HAVE_FM_ROUTING	:= true
 FM_CHR_DEV_ST		:= true
 USE_QEMU_GPS_HARDWARE	:= false
+BUILD_WITH_OFONO	:= true
 
 ifdef HARDWARE_OMX
 OMX_VENDOR := ti
@@ -46,16 +47,11 @@ endif
 
 
 # Wifi related defines
-#WPA_SUPPLICANT_VERSION		 := VER_0_6_X
 BOARD_WPA_SUPPLICANT_DRIVER      := WEXT
 BOARD_WPA_SUPPLICANT_PRIVATE_LIB := 
 BOARD_WLAN_DEVICE                := wl12xx
 
-WIFI_DRIVER_MODULE_PATH     := "/system/lib/modules/wl12xx.ko"
+WIFI_DRIVER_MODULE_PATH     := "/system/lib/modules/current/wl12xx.ko"
 WIFI_DRIVER_MODULE_ARG      := ""
 WIFI_DRIVER_MODULE_NAME     := "wl12xx"
-WIFI_FIRMWARE_LOADER        := ""
-
-# This define enables the compilation of OpenCore's command line TestApps
-#BUILD_PV_TEST_APPS :=1
-
+WIFI_FIRMWARE_LOADER        := "wlan_loader"
