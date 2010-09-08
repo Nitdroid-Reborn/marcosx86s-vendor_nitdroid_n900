@@ -16,18 +16,17 @@ loglevel 3
     export BOOTCLASSPATH /system/framework/core.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/android.policy.jar:/system/framework/services.jar
 
 # Backward compatibility
-    symlink /system/etc /etc
+    #symlink system/etc /etc
+    #symlink system/lib /lib
 
 # create mountpoints and mount tmpfs on sqlite_stmt_journals
     mkdir /sdcard 0777 system system
     #mkdir /sdcard2 0000 system system
     mkdir /system
     mkdir /data 0771 system system
-    mkdir /sqlite_stmt_journals 01777 root root
-    mount tmpfs tmpfs /sqlite_stmt_journals size=4m
 
     mount rootfs rootfs / rw remount
-    
+
     write /proc/sys/kernel/panic_on_oops 1
     write /proc/sys/kernel/hung_task_timeout_secs 0
     write /proc/cpu/alignment 4
@@ -63,29 +62,33 @@ loglevel 3
 
     # We chown/chmod /data again so because mount is run as root + defaults
     #mount yaffs2 mtd@userdata /data nosuid nodev
-    chown system system /data
-    chmod 0771 /data
+    #chown system system /data
+    #chmod 0771 /data
 
     # Create dump dir and collect dumps.
     # Do this before we mount cache so eventually we can use cache for
     # storing dumps on platforms which do not have a dedicated dump partition.
-   
-    mkdir /data/dontpanic
-    chown root log /data/dontpanic
-    chmod 0750 /data/dontpanic
+
+    #mkdir /data/dontpanic
+    #chown root log /data/dontpanic
+    #chmod 0750 /data/dontpanic
 
     # Collect apanic data, free resources and re-arm trigger
-    copy /proc/apanic_console /data/dontpanic/apanic_console
-    chown root log /data/dontpanic/apanic_console
-    chmod 0640 /data/dontpanic/apanic_console
+    #copy /proc/apanic_console /data/dontpanic/apanic_console
+    #chown root log /data/dontpanic/apanic_console
+    #chmod 0640 /data/dontpanic/apanic_console
 
-    copy /proc/apanic_threads /data/dontpanic/apanic_threads
-    chown root log /data/dontpanic/apanic_threads
-    chmod 0640 /data/dontpanic/apanic_threads
+    #copy /proc/apanic_threads /data/dontpanic/apanic_threads
+    #chown root log /data/dontpanic/apanic_threads
+    #chmod 0640 /data/dontpanic/apanic_threads
 
-    write /proc/apanic_console 1
+    #write /proc/apanic_console 1
 
-    #change permissions on vmallocinfo so we can grab it from bugreports
+    # This may have been created by the recovery system with odd permissions
+    #chown system system /cache/recovery
+    #chmod 0770 /cache/recovery
+
+#change permissions on vmallocinfo so we can grab it from bugreports
     chown root log /proc/vmallocinfo
     chmod 0440 /proc/vmallocinfo
 
@@ -96,11 +99,13 @@ loglevel 3
     mkdir /data/misc/vpn 0770 system system
     mkdir /data/misc/vpn/profiles 0770 system system
 
+# wifi permissions
     mkdir /system/etc/wifi 0770 wifi wifi
     chmod 0777 /system/etc/wifi
     chmod 0777 /system/etc/wifi/wpa_supplicant.conf
     chown wifi wifi /system/etc/wifi/wpa_supplicant.conf
-    #wpa_supplicant control socket for android wifi.c (android private socket)
+
+#wpa_supplicant control socket for android wifi.c (android private socket)
     mkdir /data/misc/wifi 0770 wifi wifi
     mkdir /data/misc/wifi/sockets 0770 wifi wifi
     mkdir /data/misc/dhcp 0777 system system
@@ -116,16 +121,15 @@ loglevel 3
     mkdir /data/app 0771 system system
     mkdir /data/property 0700 root root
 
-
-    # create dalvik-cache and double-check the perms
+# create dalvik-cache and double-check the perms
     mkdir /data/dalvik-cache 0771 system system
     chown system system /data/dalvik-cache
     chmod 0771 /data/dalvik-cache
 
-    # create the log directory
-    mkdir /data/logs 0775
+# create the log directory
+    mkdir /data/logs 0770
     chown root root /data/logs
-    chmod 0775 /data/logs
+    chmod 0770 /data/logs
 
 # change keypad permissions
     chmod 0644 /system/usr/keylayout/omap_twl4030keypad.kl
@@ -200,22 +204,6 @@ on boot
     chmod 0777 /dev/pts/4
     chmod 0777 /dev/pts/5
     chown system system /sys/class/timed_output/vibrator/enable
-    chown system system /sys/class/leds/keyboard-backlight/brightness
-    chown system system /sys/class/leds/lcd-backlight/brightness
-    chown system system /sys/class/leds/button-backlight/brightness
-    chown system system /sys/class/leds/jogball-backlight/brightness
-    chown system system /sys/class/leds/red/brightness
-    chown system system /sys/class/leds/green/brightness
-    chown system system /sys/class/leds/blue/brightness
-    chown system system /sys/class/leds/red/device/grpfreq
-    chown system system /sys/class/leds/red/device/grppwm
-    chown system system /sys/class/leds/red/device/blink
-    chown system system /sys/class/leds/red/brightness
-    chown system system /sys/class/leds/green/brightness
-    chown system system /sys/class/leds/blue/brightness
-    chown system system /sys/class/leds/red/device/grpfreq
-    chown system system /sys/class/leds/red/device/grppwm
-    chown system system /sys/class/leds/red/device/blink
     chown system system /sys/class/timed_output/vibrator/enable
     chown system system /sys/module/sco/parameters/disable_esco
     chown system system /sys/kernel/ipv4/tcp_wmem_min
@@ -242,18 +230,11 @@ on boot
 
 service console /system/bin/sh
     console
-
-# Start PowerVR SGX DDK
-service pvr /system/bin/sgx/rc.pvr start
-    oneshot
+    disabled
 
 # adbd is controlled by the persist.service.adb.enable system property
 service adbd /sbin/adbd
     disabled
-
-# adbd on at boot in emulator
-on property:ro.kernel.qemu=1
-    start adbd
 
 on property:persist.service.adb.enable=1
     start adbd
@@ -277,8 +258,23 @@ service nexus /system/bin/nexus
     socket nexus stream 0660 root system
     disabled
 
+service mountd /system/bin/mountd
+    socket mountd stream 0660 root mount
+    disabled
+
 service debuggerd /system/bin/debuggerd
 
+service ofono /system/bin/logwrapper /system/bin/ofonod -n
+    setenv OFONO_ISI_DEBUG all
+    onrestart stop oril
+    onrestart start oril
+    group radio
+
+service oril /system/bin/logwrapper /system/bin/rild -l /system/lib/libofono-ril.so
+    socket rild stream 660 root radio
+    socket rild-debug stream 660 radio system
+    user root
+    group radio cache inet misc audio bluetooth
 
 service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-system-server
     socket zygote stream 666
@@ -367,4 +363,3 @@ service dumpstate /system/bin/dumpstate -s
     socket dumpstate stream 0660 shell log
     disabled
     oneshot
-

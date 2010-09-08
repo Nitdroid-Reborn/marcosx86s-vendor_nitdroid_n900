@@ -1,3 +1,4 @@
+
 on init
     write /sys/power/sleep_while_idle 1
     write /sys/power/clocks_off_while_idle 1
@@ -5,18 +6,14 @@ on init
     write /sys/devices/platform/serial8250.0/sleep_timeout 2
 
 on boot
-    chown system system /sys/class/backlight/acx565akm/brightness
 
-    # keyboard leds
+# keyboard leds
     chown system system /sys/class/leds/lp5523\:kb1/brightness
     chown system system /sys/class/leds/lp5523\:kb2/brightness
     chown system system /sys/class/leds/lp5523\:kb3/brightness
     chown system system /sys/class/leds/lp5523\:kb4/brightness
     chown system system /sys/class/leds/lp5523\:kb5/brightness
     chown system system /sys/class/leds/lp5523\:kb6/brightness
-    chown system system /sys/class/leds/lp5523\:r/brightness
-    chown system system /sys/class/leds/lp5523\:g/brightness
-    chown system system /sys/class/leds/lp5523\:b/brightness
 
     chmod 664 /sys/class/leds/lp5523\:kb1/brightness
     chmod 664 /sys/class/leds/lp5523\:kb2/brightness
@@ -25,16 +22,17 @@ on boot
     chmod 664 /sys/class/leds/lp5523\:kb5/brightness
     chmod 664 /sys/class/leds/lp5523\:kb6/brightness
 
+    chown system system /sys/class/backlight/acx565akm/brightness
     chown system system /sys/class/graphics/fb0/blank
     chmod 0660 /sys/class/backlight/acx565akm/brightness
     chmod 0660 /sys/class/graphics/fb0/blank
 
-    chown radio root /sys/devices/platform/gpio-switch/cmt_apeslpx/state
-    chown radio root /sys/devices/platform/gpio-switch/cmt_bsi/state
-    chown radio root /sys/devices/platform/gpio-switch/cmt_en/state
-    chown radio root /sys/devices/platform/gpio-switch/cmt_rst/state
-    chown radio root /sys/devices/platform/gpio-switch/cmt_rst_rq/state
-    chown radio root /sys/devices/platform/gpio-switch/cmt_wddis/state
+    #chown radio root /sys/devices/platform/gpio-switch/cmt_apeslpx/state
+    #chown radio root /sys/devices/platform/gpio-switch/cmt_bsi/state
+    #chown radio root /sys/devices/platform/gpio-switch/cmt_en/state
+    #chown radio root /sys/devices/platform/gpio-switch/cmt_rst/state
+    #chown radio root /sys/devices/platform/gpio-switch/cmt_rst_rq/state
+    #chown radio root /sys/devices/platform/gpio-switch/cmt_wddis/state
 
     chown system system /data/app
     chmod 0771 /data/app
@@ -43,7 +41,7 @@ on boot
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
     chmod 0660                /sys/class/rfkill/rfkill0/state
 
-    # Power Management
+# Power Management
     write /sys/power/sleep_while_idle 1
     write /sys/power/enable_off_mode 1
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor ondemand
@@ -54,7 +52,7 @@ on boot
     write /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq 600000
     write /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_governor ondemand
 
-    # battery status
+# battery status
     setprop ro.sys.fs.power_supply.ac /AC0
     setprop ro.sys.fs.power_supply.bat /bq27200-0
     #setprop ro.sys.fs.power_supply.ac.feature.online /online
@@ -66,19 +64,40 @@ on boot
 
 start maemo-box
 
-
-service logcat /system/bin/logcat -v long -f /data/logs/boot.log
+# Magical DSP INIT
+service baseimage /system/bin/logwrapper /system/bin/dspexec -v -T /system/lib/dsp/baseimage.dof
+    class media_early_init
+    user  media
+    group media graphics
+    disabled
     oneshot
+
+# Start PowerVR SGX DDK
+service pvr /system/bin/sgx/rc.pvr start
+    oneshot
+
+service bootlog /system/bin/logcat -v long -f /data/logs/boot.log
+    disabled
+    oneshot
+
+on property:persist.service.bootlog.enable=1
+    start bootlog
+
+on property:persist.service.bootlog.enable=0
+    stop bootlog
+
+service radiolog /system/bin/logcat -b radio -v long -f /data/logs/radio.log
+    disabled
+    oneshot
+
+on property:persist.service.radiolog.enable=1
+    start radiolog
+
+on property:persist.service.radiolog.enable=0
+    stop radiolog
 
 service nokia-setup /system/bin/logwrapper /system/etc/init.nokia.sh
     oneshot
-
-service ril-daemon /system/bin/rild -l /system/lib/libreference-ril.so -- -d /dev/pts/0 -3
-    socket rild stream 660 root radio
-    socket rild-debug stream 660 radio system
-    user root
-    group radio cache inet misc audio
-    disabled
 
 on property:init.svc.wpa_supplicant=stopped
     stop dhcpcd
@@ -102,6 +121,7 @@ on property:init.svc.maemo-box.done=1
     start dsme
     start bme
     start bq27
+    start mdbus
 
 service dsme /system/bin/logwrapper /system/maemo/bin/dsme
     disabled
@@ -111,6 +131,13 @@ service bme /system/bin/logwrapper /system/maemo/bin/bme
     disabled
 
 service bq27 /system/bin/logwrapper /system/maemo/bin/bq27
+    oneshot
+    disabled
+
+service mdbus /system/bin/logwrapper /system/maemo/bin/dbus
+    disabled
+
+service wlan_loader /system/bin/logwrapper /system/maemo/bin/wifi
     oneshot
     disabled
 
