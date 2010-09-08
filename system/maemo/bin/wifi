@@ -1,0 +1,19 @@
+#!/bin/sh
+
+JAIL_FUNC=JAIL
+DONE_FUNC=DONE
+
+JAIL()
+{
+	wl1251-cal
+}
+
+
+DONE()
+{
+	setprop wlan.driver.status ok
+}
+
+
+source ${DROID}/system/maemo/etc/config.sh
+

@@ -54,7 +54,47 @@ ALL_PREBUILT += $(file)
 $(file) : $(LOCAL_PATH)/etc/wifi/wpa_supplicant.conf | $(ACP)
 	$(transform-prebuilt-to-target)
 
-file := $(TARGET_ROOT_OUT)/sbin/load_modules.sh
+file := $(TARGET_ROOT_OUT)/system/maemo/bin/bme
 ALL_PREBUILT += $(file)
-$(file) : $(LOCAL_PATH)/load_modules.sh | $(ACP)
-	$(transform-prebuilt-to-target)
+$(file) : $(LOCAL_PATH)/system/maemo/bin/bme | $(ACP)
+        $(transform-prebuilt-to-target)
+
+file := $(TARGET_ROOT_OUT)/system/maemo/bin/bq27
+ALL_PREBUILT += $(file)
+$(file) : $(LOCAL_PATH)/system/maemo/bin/bq27 | $(ACP)
+        $(transform-prebuilt-to-target)
+
+file := $(TARGET_ROOT_OUT)/system/maemo/bin/dsme
+ALL_PREBUILT += $(file)
+$(file) : $(LOCAL_PATH)/system/maemo/bin/dsme | $(ACP)
+        $(transform-prebuilt-to-target)
+
+file := $(TARGET_ROOT_OUT)/system/maemo/bin/init_subsys
+ALL_PREBUILT += $(file)
+$(file) : $(LOCAL_PATH)/system/maemo/bin/init_subsys | $(ACP)
+        $(transform-prebuilt-to-target)
+
+file := $(TARGET_ROOT_OUT)/system/maemo/bin/klogd
+ALL_PREBUILT += $(file)
+$(file) : $(LOCAL_PATH)/system/maemo/bin/klogd | $(ACP)
+        $(transform-prebuilt-to-target)
+
+file := $(TARGET_ROOT_OUT)/system/maemo/bin/phonet
+ALL_PREBUILT += $(file)
+$(file) : $(LOCAL_PATH)/system/maemo/bin/phonet | $(ACP)
+        $(transform-prebuilt-to-target)
+
+file := $(TARGET_ROOT_OUT)/system/maemo/etc/android.sh
+ALL_PREBUILT += $(file)
+$(file) : $(LOCAL_PATH)/system/maemo/etc/android.sh | $(ACP)
+        $(transform-prebuilt-to-target)
+
+file := $(TARGET_ROOT_OUT)/system/maemo/etc/config.sh
+ALL_PREBUILT += $(file)
+$(file) : $(LOCAL_PATH)/system/maemo/etc/config.sh | $(ACP)
+        $(transform-prebuilt-to-target)
+
+file := $(TARGET_ROOT_OUT)/system/maemo/bin/wifi
+ALL_PREBUILT += $(file)
+$(file) : $(LOCAL_PATH)/system/maemo/bin/wifi | $(ACP)
+        $(transform-prebuilt-to-target)
