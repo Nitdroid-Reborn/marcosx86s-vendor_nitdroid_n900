@@ -214,6 +214,9 @@ on boot
     chown system system /sys/kernel/ipv4/tcp_rmem_max
     chown root radio /proc/cmdline
 
+# Bluetooth MAC Address setup
+    write /sys/devices/platform/hci_h4p/bdaddr 0C:DD:EF:0A:0E:6D
+
 # Define TCP buffer sizes for various networks
 #   ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax,
     setprop net.tcp.buffersize.default 4096,87380,110208,4096,16384,110208

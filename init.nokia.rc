@@ -41,17 +41,6 @@ on boot
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
     chmod 0660                /sys/class/rfkill/rfkill0/state
 
-# Power Management
-    write /sys/power/sleep_while_idle 1
-    write /sys/power/enable_off_mode 1
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor ondemand
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 250000
-    write /sys/devices/system/cpu/cpu0/cpufreq/ondemand/up_threshold 86
-    write /sys/devices/system/cpu/cpu0/cpufreq/ondemand/sampling_rate 46875
-    write /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_min_freq 250000
-    write /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq 600000
-    write /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_governor ondemand
-
 # battery status
     setprop ro.sys.fs.power_supply.ac /AC0
     setprop ro.sys.fs.power_supply.bat /bq27200-0
