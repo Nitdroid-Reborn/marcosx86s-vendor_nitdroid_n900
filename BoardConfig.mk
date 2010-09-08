@@ -55,9 +55,3 @@ WIFI_DRIVER_MODULE_PATH     := "/system/lib/modules/current/wl12xx.ko"
 WIFI_DRIVER_MODULE_ARG      := ""
 WIFI_DRIVER_MODULE_NAME     := "wl12xx"
 WIFI_FIRMWARE_LOADER        := "wlan_loader"
-
-
-PRODUCT_PROPERTY_OVERRIDES += \
-	persist.service.bootlog.enable=0 \
-	persist.service.radiolog.enable=0
-##
