@@ -39,6 +39,11 @@ ALL_PREBUILT += $(file)
 $(file) : $(LOCAL_PATH)/etc/modem.conf | $(ACP)
         $(transform-prebuilt-to-target)
 
+file := $(TARGET_ROOT_OUT)/system/etc/gps.conf
+ALL_PREBUILT += $(file)
+$(file) : $(LOCAL_PATH)/etc/gps.conf | $(ACP)
+        $(transform-prebuilt-to-target)
+
 file := $(TARGET_ROOT_OUT)/system/etc/asound.conf
 ALL_PREBUILT += $(file)
 $(file) : $(LOCAL_PATH)/etc/asound.conf | $(ACP)
