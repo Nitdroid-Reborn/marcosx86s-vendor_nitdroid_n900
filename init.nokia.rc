@@ -33,12 +33,7 @@ on boot
     chmod 0660 /sys/class/backlight/acx565akm/brightness
     chmod 0660 /sys/class/graphics/fb0/blank
 
-    #chown radio root /sys/devices/platform/gpio-switch/cmt_apeslpx/state
-    #chown radio root /sys/devices/platform/gpio-switch/cmt_bsi/state
-    #chown radio root /sys/devices/platform/gpio-switch/cmt_en/state
-    #chown radio root /sys/devices/platform/gpio-switch/cmt_rst/state
-    #chown radio root /sys/devices/platform/gpio-switch/cmt_rst_rq/state
-    #chown radio root /sys/devices/platform/gpio-switch/cmt_wddis/state
+    chown radio root /dev/cmt_speech
 
     chown system system /data/app
     chmod 0771 /data/app
