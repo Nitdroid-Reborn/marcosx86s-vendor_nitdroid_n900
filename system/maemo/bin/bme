@@ -10,6 +10,7 @@ init()
 	then	
 		rmmod bq27x00_battery
 	fi
+	export STRACEBME=`getprop debug.bme.strace`
 }
 
 
@@ -22,7 +23,7 @@ maemo()
 		sleep 1
 	done
 
-	if [ -x /usr/bin/strace ]
+	if [ "$STRACEBME" = yes ] && [ -x /usr/bin/strace ]
 	then
 		N=1
 
