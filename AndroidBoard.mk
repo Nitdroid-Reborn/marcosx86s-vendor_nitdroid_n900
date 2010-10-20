@@ -34,6 +34,11 @@ ALL_PREBUILT += $(file)
 $(file) : $(LOCAL_PATH)/etc/vold.fstab | $(ACP)
 	$(transform-prebuilt-to-target)
 
+file := $(TARGET_ROOT_OUT)/system/xbin/rr
+ALL_PREBUILT += $(file)
+$(file) : $(LOCAL_PATH)/system/xbin/rr | $(ACP)
+	$(transform-prebuilt-to-target)
+
 file := $(TARGET_ROOT_OUT)/system/etc/modem.conf
 ALL_PREBUILT += $(file)
 $(file) : $(LOCAL_PATH)/etc/modem.conf | $(ACP)
