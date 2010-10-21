@@ -19,6 +19,11 @@ ALL_PREBUILT += $(file)
 $(file) : $(LOCAL_PATH)/gpio-keys.kl | $(ACP)
 	$(transform-prebuilt-to-target)
 
+file := $(TARGET_ROOT_OUT)/bin/busybox
+ALL_PREBUILT += $(file)
+$(file) : $(LOCAL_PATH)/busybox/busybox | $(ACP)
+	$(transform-prebuilt-to-target)
+
 file := $(TARGET_ROOT_OUT)/init.rc
 ALL_PREBUILT += $(file)
 $(file) : $(LOCAL_PATH)/init.rc | $(ACP)
