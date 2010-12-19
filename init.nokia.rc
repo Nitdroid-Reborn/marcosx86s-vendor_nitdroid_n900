@@ -7,6 +7,9 @@ on init
 
 on boot
 
+# disable proximity sensor, we don't have HAL for it currently
+    echo 1 > /sys/devices/platform/gpio-switch/proximity/disable
+
 # keyboard leds
     chown system system /sys/class/leds/lp5523\:kb1/brightness
     chown system system /sys/class/leds/lp5523\:kb2/brightness
@@ -34,6 +37,7 @@ on boot
     chmod 0660 /sys/class/graphics/fb0/blank
 
     chown radio root /dev/cmt_speech
+    chmod 666 /dev/DspBridge
 
     chown system system /data/app
     chmod 0771 /data/app
