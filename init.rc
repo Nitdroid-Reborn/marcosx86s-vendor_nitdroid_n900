@@ -28,6 +28,11 @@ loglevel 3
     mkdir /cache 0770 system cache
     mkdir /config 0500 root root
 
+# Create cgroup mount point for cpu accounting
+    mkdir /acct
+    mount cgroup none /acct cpuacct
+    mkdir /acct/uid
+
     # Directory for putting things only root should see.
     mkdir /mnt/secure 0700 root root
 
@@ -171,17 +176,20 @@ on boot
 # killed by the kernel.  These are used in ActivityManagerService.
     setprop ro.FOREGROUND_APP_ADJ 0
     setprop ro.VISIBLE_APP_ADJ 1
-    setprop ro.SECONDARY_SERVER_ADJ 2
-    setprop ro.BACKUP_APP_ADJ 2
-    setprop ro.HOME_APP_ADJ 4
+    setprop ro.PERCEPTIBLE_APP_ADJ 2
+    setprop ro.HEAVY_WEIGHT_APP_ADJ 3
+    setprop ro.SECONDARY_SERVER_ADJ 4
+    setprop ro.BACKUP_APP_ADJ 5
+    setprop ro.HOME_APP_ADJ 6
     setprop ro.HIDDEN_APP_MIN_ADJ 7
-    setprop ro.CONTENT_PROVIDER_ADJ 14
     setprop ro.EMPTY_APP_ADJ 15
 
 # Define the memory thresholds at which the above process classes will
 # be killed.  These numbers are in pages (4k).
     setprop ro.FOREGROUND_APP_MEM 4096
     setprop ro.VISIBLE_APP_MEM 8192
+    setprop ro.PERCEPTIBLE_APP_MEM 4096
+    setprop ro.HEAVY_WEIGHT_APP_MEM 4096
     setprop ro.SECONDARY_SERVER_MEM 8192
     setprop ro.BACKUP_APP_MEM 8192
     setprop ro.HOME_APP_MEM 12444
