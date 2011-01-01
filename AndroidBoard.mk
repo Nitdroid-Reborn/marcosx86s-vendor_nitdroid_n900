@@ -1,8 +1,16 @@
 LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
+
 LOCAL_SRC_FILES := omap_twl4030keypad.kcm
+LOCAL_MODULE_TAGS := optional
 include $(BUILD_KEY_CHAR_MAP)
+include $(CLEAR_VARS)
+
+LOCAL_SRC_FILES := omap_twl4030keypad.ru.kcm
+LOCAL_MODULE_TAGS := optional
+include $(BUILD_KEY_CHAR_MAP)
+include $(CLEAR_VARS)
 
 file := $(TARGET_OUT_KEYLAYOUT)/omap_twl4030keypad.kl
 ALL_PREBUILT += $(file)
@@ -10,6 +18,7 @@ $(file) : $(LOCAL_PATH)/omap_twl4030keypad.kl | $(ACP)
 	$(transform-prebuilt-to-target)
 
 file := $(TARGET_OUT_KEYLAYOUT)/triton2-pwrbutton.kl
+LOCAL_MODULE_TAGS := optional
 ALL_PREBUILT += $(file)
 $(file) : $(LOCAL_PATH)/triton2-pwrbutton.kl | $(ACP)
 	$(transform-prebuilt-to-target)
