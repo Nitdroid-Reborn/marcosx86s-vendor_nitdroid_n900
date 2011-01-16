@@ -1,3 +1,6 @@
+on early-init
+    start ueventd
+
 on init
 
 sysclktz 0
@@ -12,9 +15,10 @@ loglevel 3
     export ANDROID_ROOT /system
     export ANDROID_ASSETS /system/app
     export ANDROID_DATA /data
-    export EXTERNAL_STORAGE /sdcard
+    export EXTERNAL_STORAGE /mnt/sdcard
     export ASEC_MOUNTPOINT /mnt/asec
-    export BOOTCLASSPATH /system/framework/core.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/android.policy.jar:/system/framework/services.jar
+    export LOOP_MOUNTPOINT /mnt/obb
+    export BOOTCLASSPATH /system/framework/core.jar:/system/framework/bouncycastle.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/android.policy.jar:/system/framework/services.jar:/system/framework/core-junit.jar
 
 # Backward compatibility
     #symlink system/etc /etc
@@ -23,15 +27,12 @@ loglevel 3
 # create mountpoints and mount tmpfs on sqlite_stmt_journals
     mkdir /mnt 0775 root system
     mkdir /mnt/sdcard 0000 system system
-    mkdir /sdcard 0777 system system
     mkdir /data 0771 system system
     mkdir /cache 0770 system cache
     mkdir /config 0500 root root
 
-# Create cgroup mount point for cpu accounting
-    mkdir /acct
-    mount cgroup none /acct cpuacct
-    mkdir /acct/uid
+# Backwards Compat - XXX: Going away in G*
+    symlink /mnt/sdcard /sdcard
 
     # Directory for putting things only root should see.
     mkdir /mnt/secure 0700 root root
@@ -46,6 +47,10 @@ loglevel 3
     # Secure container public mount points.
     mkdir /mnt/asec  0700 root system
     mount tmpfs tmpfs /mnt/asec mode=0755,gid=1000
+
+    # Filesystem image public mount points.
+    mkdir /mnt/obb 0700 root system
+    mount tmpfs tmpfs /mnt/obb mode=0755,gid=1000
 
     symlink /initrd /mnt/initfs
 
@@ -79,11 +84,14 @@ loglevel 3
     # 5.0 %
     write /dev/cpuctl/bg_non_interactive/cpu.shares 52
 
+#on fs
 # mount mtd partitions
     # Mount /system rw first to give the filesystem a chance to save a checkpoint
     #mount yaffs2 mtd@system /system
     #mount yaffs2 mtd@system /system ro remount
+    chown root log /proc/vmallocinfo
 
+on post-fs
     # We chown/chmod /data again so because mount is run as root + defaults
     #mount yaffs2 mtd@userdata /data nosuid nodev
     #chown system system /data
@@ -186,16 +194,15 @@ on boot
 
 # Define the memory thresholds at which the above process classes will
 # be killed.  These numbers are in pages (4k).
-    setprop ro.FOREGROUND_APP_MEM 4096
-    setprop ro.VISIBLE_APP_MEM 8192
+    setprop ro.FOREGROUND_APP_MEM 2048
+    setprop ro.VISIBLE_APP_MEM 3072
     setprop ro.PERCEPTIBLE_APP_MEM 4096
     setprop ro.HEAVY_WEIGHT_APP_MEM 4096
-    setprop ro.SECONDARY_SERVER_MEM 8192
-    setprop ro.BACKUP_APP_MEM 8192
-    setprop ro.HOME_APP_MEM 12444
-    setprop ro.HIDDEN_APP_MEM 8192
-    setprop ro.CONTENT_PROVIDER_MEM 20480
-    setprop ro.EMPTY_APP_MEM 20480
+    setprop ro.SECONDARY_SERVER_MEM 6144
+    setprop ro.BACKUP_APP_MEM 6144
+    setprop ro.HOME_APP_MEM 6144
+    setprop ro.HIDDEN_APP_MEM 7168
+    setprop ro.EMPTY_APP_MEM 8192
 
 # Write value must be consistent with the above properties.
 # Note that the driver only supports 6 slots, so we have HOME_APP at the
@@ -204,7 +211,7 @@ on boot
 
     write /proc/sys/vm/overcommit_memory 1
     write /proc/sys/vm/min_free_order_shift 4
-    write /sys/module/lowmemorykiller/parameters/minfree 4096,8192,8192,8192,12444,8192,20480,20480
+    write /sys/module/lowmemorykiller/parameters/minfree 2048,3072,4096,6144,7168,8192
 
     # Set init its forked children's oom_adj.
     write /proc/1/oom_adj -16
@@ -231,8 +238,6 @@ on boot
     chmod 0777 /dev/pts/3
     chmod 0777 /dev/pts/4
     chmod 0777 /dev/pts/5
-    chown system system /sys/class/timed_output/vibrator/enable
-    chown system system /sys/class/timed_output/vibrator/enable
     chown system system /sys/module/sco/parameters/disable_esco
     chown system system /sys/kernel/ipv4/tcp_wmem_min
     chown system system /sys/kernel/ipv4/tcp_wmem_def
@@ -258,6 +263,8 @@ on boot
 
 ## Daemon processes to be run by init.
 ##
+service ueventd /sbin/ueventd
+    critical
 
 service console /system/bin/sh
     console
@@ -274,7 +281,7 @@ on property:persist.service.adb.enable=0
     stop adbd
 
 service vold /system/bin/vold
-    socket vold stream 0666 root system mount
+    socket vold stream 0666 root mount
 
 service servicemanager /system/bin/servicemanager
     user system
@@ -304,15 +311,12 @@ service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-sys
     onrestart write /sys/android_power/request_state wake
     onrestart write /sys/power/state on
     onrestart restart media
+    onrestart restart netd
 
 service media /system/bin/mediaserver
     user media
-    group system audio camera graphics inet net_bt net_bt_admin
-
-#service bootsound /system/bin/playmp3
-#    user media
-#    group audio
-#    oneshot
+    group system audio camera graphics inet net_bt net_bt_admin net_raw
+#    ioprio rt 4
 
 service bootanim /system/bin/bootanimation
     user graphics
