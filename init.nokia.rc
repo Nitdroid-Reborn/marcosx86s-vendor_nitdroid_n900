@@ -1,3 +1,8 @@
+on early-init
+    #exec /bin/sh /system/etc/mb_logic.sh
+    insmod /system/lib/modules/current/bridgedriver.ko shm_size=0x400000 phys_mempool_base=0 base_img=/mnt/initfs/lib/dsp/baseimage.dof
+    insmod /system/lib/modules/current/dspbridge.ko
+    insmod /system/lib/modules/current/cmt_speech.ko
 
 on init
     write /sys/power/sleep_while_idle 1
@@ -8,7 +13,7 @@ on init
 on boot
 
 # disable proximity sensor, we don't have HAL for it currently
-    echo 1 > /sys/devices/platform/gpio-switch/proximity/disable
+    write /sys/devices/platform/gpio-switch/proximity/disable 1
 
 # keyboard leds
     chown system system /sys/class/leds/lp5523\:kb1/brightness
@@ -36,9 +41,6 @@ on boot
     chmod 0660 /sys/class/backlight/acx565akm/brightness
     chmod 0660 /sys/class/graphics/fb0/blank
 
-    chown radio root /dev/cmt_speech
-    chmod 666 /dev/DspBridge
-
     chown system system /data/app
     chmod 0771 /data/app
 
@@ -60,10 +62,6 @@ start maemo-box
 
 # Magical DSP INIT
 service baseimage /system/bin/logwrapper /system/bin/dspexec -v -T /system/lib/dsp/baseimage.dof
-    class media_early_init
-    user  media
-    group media graphics
-    disabled
     oneshot
 
 # Start PowerVR SGX DDK

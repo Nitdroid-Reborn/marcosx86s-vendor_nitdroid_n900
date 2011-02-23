@@ -73,6 +73,11 @@ ALL_PREBUILT += $(file)
 $(file) : $(LOCAL_PATH)/etc/init.nokia.sh | $(ACP)
 	$(transform-prebuilt-to-target)
 
+file := $(TARGET_ROOT_OUT)/ueventd.nokia.rc
+ALL_PREBUILT += $(file)
+$(file) : $(LOCAL_PATH)/ueventd.nokia.rc | $(ACP)
+	$(transform-prebuilt-to-target)
+
 file := $(TARGET_ROOT_OUT)/system/etc/dhcpcd/dhcpcd.conf
 ALL_PREBUILT += $(file)
 $(file) : $(LOCAL_PATH)/etc/dhcpcd/dhcpcd.conf | $(ACP)
