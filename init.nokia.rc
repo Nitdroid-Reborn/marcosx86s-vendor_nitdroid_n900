@@ -1,8 +1,19 @@
 on early-init
     #exec /bin/sh /system/etc/mb_logic.sh
-    insmod /system/lib/modules/current/bridgedriver.ko shm_size=0x400000 phys_mempool_base=0 base_img=/mnt/initfs/lib/dsp/baseimage.dof
+    insmod /system/lib/modules/current/bridgedriver.ko shm_size=0x400000 phys_mempool_base=0 base_img=/system/lib/dsp/baseimage.dof
     insmod /system/lib/modules/current/dspbridge.ko
     insmod /system/lib/modules/current/cmt_speech.ko
+
+    insmod /system/lib/modules/current/smia-sensor.ko
+    insmod /system/lib/modules/current/videobuf-core.ko
+    insmod /system/lib/modules/current/videobuf-dma-sg.ko
+    insmod /system/lib/modules/current/isp-mod.ko
+    insmod /system/lib/modules/current/v4l1-compat.ko
+    insmod /system/lib/modules/current/videodev.ko
+    insmod /system/lib/modules/current/et8ek8.ko
+    insmod /system/lib/modules/current/omap_previewer_hack.ko
+    insmod /system/lib/modules/current/omap34xxcam-mod.ko
+    insmod /system/lib/modules/current/board-rx51-camera.ko
 
 on init
     write /sys/power/sleep_while_idle 1
