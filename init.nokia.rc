@@ -1,5 +1,6 @@
 on early-init
     #exec /bin/sh /system/etc/mb_logic.sh
+    insmod /system/lib/modules/current/keychord.ko
     insmod /system/lib/modules/current/bridgedriver.ko shm_size=0x400000 phys_mempool_base=0 base_img=/system/lib/dsp/baseimage.dof
     insmod /system/lib/modules/current/dspbridge.ko
     insmod /system/lib/modules/current/cmt_speech.ko
@@ -143,4 +144,9 @@ service mdbus /system/bin/logwrapper /system/maemo/bin/dbus
 service wlan_loader /system/bin/logwrapper /system/maemo/bin/wifi
     oneshot
     disabled
+
+service reboot /sbin/reboot -f
+    oneshot
+    disabled
+    keycodes 100 42 19 48
 
