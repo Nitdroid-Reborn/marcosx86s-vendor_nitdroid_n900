@@ -102,6 +102,7 @@ on property:persist.service.radiolog.enable=0
 
 service nokia-setup /system/bin/logwrapper /system/etc/init.nokia.sh
     oneshot
+    disabled
 
 on property:init.svc.wpa_supplicant=stopped
     stop dhcpcd
