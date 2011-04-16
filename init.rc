@@ -310,8 +310,8 @@ service ofono /system/bin/logwrapper /system/bin/ofonod -n
 service oril /system/bin/logwrapper /system/bin/rild -l /system/lib/libofono-ril.so
     socket rild stream 660 root radio
     socket rild-debug stream 660 radio system
-    onrestart stop ofono
-    onrestart start ofono
+    #onrestart stop ofono
+    onrestart restart ofono
     user root
     group radio cache inet misc audio bluetooth
 
