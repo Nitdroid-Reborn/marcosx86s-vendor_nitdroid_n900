@@ -23,9 +23,29 @@ PRODUCT_PACKAGES += \
 	libRS \
 	librs_jni
 
+### Permissions ###
+
+# Handheld core
+PRODUCT_COPY_FILES += \
+    frameworks/base/data/etc/handheld_core_hardware.xml:system/etc/permissions/handheld_core_hardware.xml
+
+# Wi-Fi
+PRODUCT_COPY_FILES += \
+    frameworks/base/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml
+
+# Telephony (GSM)
+PRODUCT_COPY_FILES += \
+    frameworks/base/data/etc/android.hardware.telephony.gsm.xml:system/etc/permissions/android.hardware.telephony.gsm.xml
+
+# Location (GPS)
+PRODUCT_COPY_FILES += \
+    frameworks/base/data/etc/android.hardware.location.gps.xml:system/etc/permissions/android.hardware.location.gps.xml
+
 # Enable SIP+VoIP
 PRODUCT_COPY_FILES += \
     frameworks/base/data/etc/android.software.sip.voip.xml:system/etc/permissions/android.software.sip.voip.xml
+
+### End of Permissions ###
 
 
 # Overrides
