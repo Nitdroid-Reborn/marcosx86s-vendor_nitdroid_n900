@@ -4,5 +4,3 @@
 
 ro.sf.lcd_density=240
 wifi.interface=wlan0
-persist.service.bootlog.enable=0
-persist.service.radiolog.enable=0
