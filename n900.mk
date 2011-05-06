@@ -9,7 +9,6 @@ PRODUCT_PACKAGES += \
     Development \
     Term \
     SpareParts \
-    Provision \
     DeskClock \
     DownloadProvider \
     Gallery3D \
@@ -22,6 +21,9 @@ PRODUCT_PACKAGES += \
     VoiceDialer \
 	libRS \
 	librs_jni
+
+# Provision is only needed when we build AOSP without GApps
+#PRODUCT_PACKAGES += Provision
 
 ### Permissions ###
 
