@@ -48,6 +48,11 @@ ALL_PREBUILT += $(file)
 $(file) : $(LOCAL_PATH)/etc/vold.fstab | $(ACP)
 	$(transform-prebuilt-to-target)
 
+file := $(TARGET_ROOT_OUT)/system/etc/switchswap.sh
+ALL_PREBUILT += $(file)
+$(file) : $(LOCAL_PATH)/etc/switchswap.sh | $(ACP)
+	$(transform-prebuilt-to-target)
+
 file := $(TARGET_ROOT_OUT)/system/xbin/rr
 ALL_PREBUILT += $(file)
 $(file) : $(LOCAL_PATH)/system/xbin/rr | $(ACP)
