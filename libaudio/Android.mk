@@ -1,6 +1,6 @@
 LOCAL_PATH:= $(call my-dir)
 
-ifneq ($(filter crespo crespo4g,$(TARGET_DEVICE)),)
+ifneq ($(filter n900 crespo crespo4g,$(TARGET_DEVICE)),)
 
 include $(CLEAR_VARS)
 LOCAL_SRC_FILES:= aplay.c alsa_pcm.c alsa_mixer.c
