@@ -763,7 +763,7 @@ struct pcm *AudioHardware::openPcmOut_l()
         }
         unsigned flags = PCM_OUT;
 
-        flags |= (AUDIO_HW_OUT_PERIOD_MULT - 1) << PCM_PERIOD_SZ_SHIFT;
+        //flags |= (AUDIO_HW_OUT_PERIOD_MULT - 1) << PCM_PERIOD_SZ_SHIFT;
         flags |= (AUDIO_HW_OUT_PERIOD_CNT - PCM_PERIOD_CNT_MIN) << PCM_PERIOD_CNT_SHIFT;
 
         TRACE_DRIVER_IN(DRV_PCM_OPEN)
