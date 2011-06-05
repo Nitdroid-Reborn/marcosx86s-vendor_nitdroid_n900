@@ -24,6 +24,7 @@
 #include <utils/String8.h>
 
 #include <stdio.h>
+#include <ctype.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
 #include <sys/types.h>
@@ -70,6 +71,49 @@ enum {
 #define TRACE_DRIVER_IN(op)
 #define TRACE_DRIVER_OUT
 #endif
+
+static struct mixer_ctl *get_ctl(struct mixer *mixer, const char *name)
+{
+    char *p;
+    unsigned idx = 0;
+
+    if (isdigit(name[0]))
+        return mixer_get_nth_control(mixer, atoi(name) - 1);
+
+    p = strrchr(name, '#');
+    if (p) {
+        *p++ = 0;
+        idx = atoi(p);
+    }
+
+    return mixer_get_control(mixer, name, idx);
+}
+
+static void setMixerCtl(const char *name, const char *value)
+{
+    struct mixer *mixer;
+    struct mixer_ctl *ctl;
+    int r;
+
+    mixer = mixer_open();
+    if (!mixer) {
+        LOGE("open_mixer failed: %s", strerror(errno));
+        return;
+    }
+
+    ctl = get_ctl(mixer, name);
+    if (!ctl) {
+        LOGE("can't find mixer ctl: %s", name);
+        return;
+    }
+
+    if (isdigit(*value))
+        r = mixer_ctl_set(ctl, atoi(value));
+    else
+        r = mixer_ctl_select(ctl, value);
+    if (r)
+        LOGE("setMixerCtl: %s\n", strerror(errno));
+}
 
 // ----------------------------------------------------------------------------
 
@@ -1263,6 +1307,25 @@ status_t AudioHardware::AudioStreamOutALSA::setParameters(const String8& keyValu
                     mDevices = (uint32_t)device;
                     if (mHardware->mode() != AudioSystem::MODE_IN_CALL) {
                         doStandby_l();
+                        if ( 8 == device ) {
+                            // HEADSET
+                            setMixerCtl("Headphone Playback Volume", "42");
+                            setMixerCtl("HP DAC Playback Volume", "0");
+                            setMixerCtl("Line DAC Playback Volume", "127");
+                            setMixerCtl("ADC HPF Cut-off", "Disabled");
+                            setMixerCtl("Jack Function", "Headset");
+                        }
+                        else if (2 == device || 10 == device) {
+                            // SPEAKERS
+                            setMixerCtl("HP DAC Playback Volume", "118");
+                            setMixerCtl("HP DAC Output Volume", "6");
+                            setMixerCtl("Speaker Function", "On");
+                            setMixerCtl("Headphone Playback Volume", "0");
+                            setMixerCtl("ADC HPF Cut-off", "0.0045xFs");
+                            setMixerCtl("Jack Function", "Off");
+                            setMixerCtl("", "");
+                            setMixerCtl("", "");
+                        }
                     }
                 }
                 if (mHardware->mode() == AudioSystem::MODE_IN_CALL) {
