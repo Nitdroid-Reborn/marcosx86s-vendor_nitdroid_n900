@@ -1309,22 +1309,25 @@ status_t AudioHardware::AudioStreamOutALSA::setParameters(const String8& keyValu
                         doStandby_l();
                         if ( 8 == device ) {
                             // HEADSET
-                            setMixerCtl("Headphone Playback Volume", "42");
+                            setMixerCtl("PCM Playback Volume", "127");
+                            setMixerCtl("Headphone Playback Volume", "127");
                             setMixerCtl("HP DAC Playback Volume", "0");
                             setMixerCtl("Line DAC Playback Volume", "127");
                             setMixerCtl("ADC HPF Cut-off", "Disabled");
                             setMixerCtl("Jack Function", "Headset");
+                            setMixerCtl("Earphone Function", "Off");
                         }
                         else if (2 == device || 10 == device) {
                             // SPEAKERS
+                            setMixerCtl("PCM Playback Volume", "118");
                             setMixerCtl("HP DAC Playback Volume", "118");
                             setMixerCtl("HP DAC Output Volume", "6");
                             setMixerCtl("Speaker Function", "On");
                             setMixerCtl("Headphone Playback Volume", "0");
                             setMixerCtl("ADC HPF Cut-off", "0.0045xFs");
                             setMixerCtl("Jack Function", "Off");
-                            setMixerCtl("", "");
-                            setMixerCtl("", "");
+                            setMixerCtl("Earphone Function", "Off");
+                            //setMixerCtl("", "");
                         }
                     }
                 }
