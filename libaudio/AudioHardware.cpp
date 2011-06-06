@@ -115,6 +115,42 @@ static void setMixerCtl(const char *name, const char *value)
         LOGE("setMixerCtl: %s\n", strerror(errno));
 }
 
+static void setAudioRouting(int device)
+{
+    if ( 8 == device ) {
+        // HEADSET
+        LOGD("Routing: HEADSET");
+        setMixerCtl("PCM Playback Volume", "127");
+        setMixerCtl("Headphone Playback Volume", "127");
+        setMixerCtl("HP DAC Playback Volume", "0");
+        setMixerCtl("Line DAC Playback Volume", "127");
+        setMixerCtl("ADC HPF Cut-off", "Disabled");
+        setMixerCtl("Speaker Function", "Off");
+        setMixerCtl("Jack Function", "Headset");
+        setMixerCtl("Earphone Function", "Off");
+    }
+    else if (1 == device) {
+        // EARPIECE
+    }
+    else if (2 == device || 10 == device) {
+        // SPEAKERS
+        LOGD("Routing: SPEAKERS");
+        setMixerCtl("PCM Playback Volume", "118");
+        setMixerCtl("HP DAC Playback Volume", "118");
+        setMixerCtl("HP DAC Output Volume", "6");
+        setMixerCtl("Line DAC Playback Volume", "127");
+        setMixerCtl("Headphone Playback Volume", "0");
+        setMixerCtl("ADC HPF Cut-off", "0.0045xFs");
+        setMixerCtl("Speaker Function", "On");
+        setMixerCtl("Jack Function", "Off");
+        setMixerCtl("Earphone Function", "Off");
+        //setMixerCtl("", "");
+    }
+    else {
+        LOGE("Don't know anything about routing #%d", device);
+    }
+}
+
 // ----------------------------------------------------------------------------
 
 const char *AudioHardware::inputPathNameDefault = "Default";
@@ -734,6 +770,7 @@ status_t AudioHardware::setIncallPath_l(uint32_t device)
 {
     LOGV("setIncallPath_l: device %x", device);
 
+#if 0
     // Setup sound path for CP clocking
     if ((mSecRilLibHandle) &&
         (connectRILDIfRequired() == OK)) {
@@ -793,6 +830,7 @@ status_t AudioHardware::setIncallPath_l(uint32_t device)
             }
         }
     }
+#endif
     return NO_ERROR;
 }
 
@@ -1303,32 +1341,13 @@ status_t AudioHardware::AudioStreamOutALSA::setParameters(const String8& keyValu
             if (device != 0) {
                 AutoMutex hwLock(mHardware->lock());
 
+                LOGD("mDevices=%d, device=%d", mDevices, device);
                 if (mDevices != (uint32_t)device) {
                     mDevices = (uint32_t)device;
-                    if (mHardware->mode() != AudioSystem::MODE_IN_CALL) {
+                    //if (mHardware->mode() != AudioSystem::MODE_IN_CALL)
+                    {
                         doStandby_l();
-                        if ( 8 == device ) {
-                            // HEADSET
-                            setMixerCtl("PCM Playback Volume", "127");
-                            setMixerCtl("Headphone Playback Volume", "127");
-                            setMixerCtl("HP DAC Playback Volume", "0");
-                            setMixerCtl("Line DAC Playback Volume", "127");
-                            setMixerCtl("ADC HPF Cut-off", "Disabled");
-                            setMixerCtl("Jack Function", "Headset");
-                            setMixerCtl("Earphone Function", "Off");
-                        }
-                        else if (2 == device || 10 == device) {
-                            // SPEAKERS
-                            setMixerCtl("PCM Playback Volume", "118");
-                            setMixerCtl("HP DAC Playback Volume", "118");
-                            setMixerCtl("HP DAC Output Volume", "6");
-                            setMixerCtl("Speaker Function", "On");
-                            setMixerCtl("Headphone Playback Volume", "0");
-                            setMixerCtl("ADC HPF Cut-off", "0.0045xFs");
-                            setMixerCtl("Jack Function", "Off");
-                            setMixerCtl("Earphone Function", "Off");
-                            //setMixerCtl("", "");
-                        }
+                        setAudioRouting(device);
                     }
                 }
                 if (mHardware->mode() == AudioSystem::MODE_IN_CALL) {
