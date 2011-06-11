@@ -104,7 +104,6 @@ static void setMixerCtl(const char *name, const char *value)
     ctl = get_ctl(mixer, name);
     if (!ctl) {
         LOGE("can't find mixer ctl: %s", name);
-        return;
     }
 
     if (isdigit(*value))
@@ -112,42 +111,61 @@ static void setMixerCtl(const char *name, const char *value)
     else
         r = mixer_ctl_select(ctl, value);
     if (r)
-        LOGE("setMixerCtl: %s\n", strerror(errno));
+        LOGE("setMixerCtl(%s, %s): %s\n", name, value, strerror(errno));
+
+    mixer_close(mixer);
 }
 
 static void setAudioRouting(int device)
 {
-    if ( 8 == device ) {
-        // HEADSET
-        LOGD("Routing: HEADSET");
-        setMixerCtl("PCM Playback Volume", "127");
-        setMixerCtl("Headphone Playback Volume", "127");
-        setMixerCtl("HP DAC Playback Volume", "0");
-        setMixerCtl("Line DAC Playback Volume", "127");
-        setMixerCtl("ADC HPF Cut-off", "Disabled");
-        setMixerCtl("Speaker Function", "Off");
-        setMixerCtl("Jack Function", "Headset");
-        setMixerCtl("Earphone Function", "Off");
-    }
-    else if (1 == device) {
-        // EARPIECE
-    }
-    else if (2 == device || 10 == device) {
-        // SPEAKERS
-        LOGD("Routing: SPEAKERS");
-        setMixerCtl("PCM Playback Volume", "118");
-        setMixerCtl("HP DAC Playback Volume", "118");
-        setMixerCtl("HP DAC Output Volume", "6");
-        setMixerCtl("Line DAC Playback Volume", "127");
-        setMixerCtl("Headphone Playback Volume", "0");
-        setMixerCtl("ADC HPF Cut-off", "0.0045xFs");
-        setMixerCtl("Speaker Function", "On");
-        setMixerCtl("Jack Function", "Off");
-        setMixerCtl("Earphone Function", "Off");
-        //setMixerCtl("", "");
-    }
-    else {
-        LOGE("Don't know anything about routing #%d", device);
+    switch(device) {
+        case AudioSystem::DEVICE_OUT_WIRED_HEADSET:
+        case AudioSystem::DEVICE_OUT_WIRED_HEADPHONE:
+            LOGD("Routing: HEADSET");
+            setMixerCtl("PCM Playback Volume", "127");
+            setMixerCtl("Headphone Playback Volume", "127");
+            setMixerCtl("HP DAC Playback Volume", "0");
+            setMixerCtl("Line DAC Playback Volume", "127");
+            setMixerCtl("ADC HPF Cut-off", "Disabled");
+            setMixerCtl("Speaker Function", "Off");
+            setMixerCtl("Jack Function", "Headset");
+            setMixerCtl("Earphone Function", "Off");
+            break;
+
+        case AudioSystem::DEVICE_OUT_EARPIECE:
+            LOGD("Routing: EARPIECE");
+            setMixerCtl("Headphone Playback Volume", "0");
+            setMixerCtl("Line DAC Playback Volume", "0");
+            setMixerCtl("Mono DAC Playback Volume", "118");
+            setMixerCtl("HP DAC Playback Volume", "0");
+            setMixerCtl("HP Line2 Bypass Playback Volume", "0");
+            setMixerCtl("HPCOM PGA Bypass Playback Volume", "0");
+            setMixerCtl("HP DAC Playback Volume", "71");
+            setMixerCtl("HP DAC Output Volume", "");
+            setMixerCtl("Input Select", "Digital Mic");
+            setMixerCtl("Earphone Playback Volume", "118");
+            //setMixerCtl("ADC HPF Cut-off", "0.0045xFs");
+            setMixerCtl("Speaker Function", "Off");
+            setMixerCtl("Jack Function", "Off");
+            setMixerCtl("Earphone Function", "On");
+            break;
+
+        case AudioSystem::DEVICE_OUT_SPEAKER:
+        case AudioSystem::DEVICE_OUT_SPEAKER | AudioSystem::DEVICE_OUT_WIRED_HEADSET:
+            LOGD("Routing: SPEAKERS");
+            setMixerCtl("PCM Playback Volume", "118");
+            setMixerCtl("HP DAC Playback Volume", "118");
+            setMixerCtl("HP DAC Output Volume", "6");
+            setMixerCtl("Line DAC Playback Volume", "127");
+            setMixerCtl("Headphone Playback Volume", "0");
+            //setMixerCtl("ADC HPF Cut-off", "0.0045xFs");
+            setMixerCtl("Speaker Function", "On");
+            setMixerCtl("Jack Function", "Off");
+            setMixerCtl("Earphone Function", "Off");
+            break;
+
+        default:
+            LOGE("Don't know anything about routing #%d", device);
     }
 }
 
