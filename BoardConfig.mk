@@ -47,6 +47,9 @@ DVFS_ENABLED:=1
 BUILD_JPEG_DECODER:= true
 endif
 
+CUSTOM_MODULES := libglib-2.0 libcmtspeechdata ofonod libofono-ril
+CUSTOM_MODULES += sensors.nokia lights.nokia
+
 # GPS related defines
 BOARD_HAVE_FAKE_GPS := true
 
