@@ -195,6 +195,7 @@ AudioHardware::AudioHardware() :
 {
     loadRILD();
     mInit = true;
+    setAudioRouting(AudioSystem::DEVICE_OUT_SPEAKER);
 }
 
 AudioHardware::~AudioHardware()
