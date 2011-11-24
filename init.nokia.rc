@@ -74,13 +74,16 @@ start maemo-box
 
 # Magical DSP INIT
 service baseimage /system/bin/logwrapper /system/bin/dspexec -v -T /system/lib/dsp/baseimage.dof
+    class main
     oneshot
 
 # Start PowerVR SGX DDK
 service pvr /system/bin/sgx/rc.pvr start
+    class main
     oneshot
 
 service bootlog /system/bin/logcat -v long -f /data/logs/boot.log
+    class main
     disabled
     oneshot
 
@@ -91,6 +94,7 @@ on property:persist.service.bootlog.enable=0
     stop bootlog
 
 service radiolog /system/bin/logcat -b radio -v long -f /data/logs/radio.log
+    class main
     disabled
     oneshot
 
@@ -101,19 +105,23 @@ on property:persist.service.radiolog.enable=0
     stop radiolog
 
 service nokia-setup /system/bin/logwrapper /system/etc/init.nokia.sh
+    class main
     oneshot
     disabled
 
 service swap-setup /system/bin/logwrapper /bin/sh /system/etc/switchswap.sh
+    class main
     oneshot
 
 service wpa_supplicant /system/bin/wpa_supplicant -iwlan0 -c/data/misc/wifi/wpa_supplicant.conf -dd -K -Dwext
+    class main
     socket wpa_wlan0 dgram 660 wifi wifi
     group wifi inet
     disabled
     oneshot
 
 service dhcpcd_wlan0 /system/bin/logwrapper /system/bin/dhcpcd -d wlan0
+    class main
     group system dhcp
     disabled
     oneshot
