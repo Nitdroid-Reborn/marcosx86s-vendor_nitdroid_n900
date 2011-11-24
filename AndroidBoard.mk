@@ -2,24 +2,8 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_SRC_FILES := omap_twl4030keypad.kcm
-LOCAL_MODULE_TAGS := optional
-include $(BUILD_KEY_CHAR_MAP)
-include $(CLEAR_VARS)
-
-LOCAL_SRC_FILES := omap_twl4030keypad.ru.kcm
-LOCAL_MODULE_TAGS := optional
-include $(BUILD_KEY_CHAR_MAP)
-include $(CLEAR_VARS)
-
-#
-#
-#
-
+# Misc
 PRODUCT_COPY_FILES += \
-	$(LOCAL_PATH)/omap_twl4030keypad.kl:$(TARGET_OUT_KEYLAYOUT)/omap_twl4030keypad.kl \
-	$(LOCAL_PATH)/triton2-pwrbutton.kl:$(TARGET_OUT_KEYLAYOUT)/triton2-pwrbutton.kl \
-	$(LOCAL_PATH)/gpio-keys.kl:$(TARGET_OUT_KEYLAYOUT)/gpio-keys.kl \
 	$(LOCAL_PATH)/busybox/busybox:$(TARGET_ROOT_OUT)/bin/busybox \
 	$(LOCAL_PATH)/init.rc:$(TARGET_ROOT_OUT)/init.rc \
 	$(LOCAL_PATH)/init.nokia.rc:$(TARGET_ROOT_OUT)/init.nokia.rc \
@@ -41,4 +25,22 @@ PRODUCT_COPY_FILES += \
 	$(LOCAL_PATH)/system/maemo/etc/android.sh:$(TARGET_ROOT_OUT)/system/maemo/etc/android.sh \
 	$(LOCAL_PATH)/system/maemo/etc/config.sh:$(TARGET_ROOT_OUT)/system/maemo/etc/config.sh \
 	$(LOCAL_PATH)/system/maemo/bin/wifi:$(TARGET_ROOT_OUT)/system/maemo/bin/wifi
+##
+
+# Input device calibration files
+PRODUCT_COPY_FILES += \
+	$(LOCAL_PATH)/TSC2005_touchscreen.idc:system/usr/idc/TSC2005_touchscreen.idc \
+	$(LOCAL_PATH)/omap_twl4030keypad.idc:system/usr/idc/omap_twl4030keypad.idc
+##
+
+# Keylayouts
+PRODUCT_COPY_FILES += \
+	$(LOCAL_PATH)/omap_twl4030keypad.kl:$(TARGET_OUT_KEYLAYOUT)/omap_twl4030keypad.kl \
+	$(LOCAL_PATH)/triton2-pwrbutton.kl:$(TARGET_OUT_KEYLAYOUT)/triton2-pwrbutton.kl \
+	$(LOCAL_PATH)/gpio-keys.kl:$(TARGET_OUT_KEYLAYOUT)/gpio-keys.kl \
+##
+
+# Keycharmaps
+PRODUCT_COPY_FILES += \
+	$(LOCAL_PATH)/omap_twl4030keypad.kcm:$(TARGET_OUT_KEYCHARS)/omap_twl4030keypad.kcm
 ##
