@@ -34,7 +34,7 @@ extern "C" {
     struct mixer_ctl;
 };
 
-namespace android {
+namespace android_audio_legacy {
 
 // TODO: determine actual audio DSP and hardware latency
 // Additionnal latency introduced by audio DSP and hardware in ms
@@ -67,6 +67,7 @@ namespace android {
 // Default audio input buffer size in bytes (8kHz mono)
 #define AUDIO_HW_IN_PERIOD_BYTES ((AUDIO_HW_IN_PERIOD_SZ*sizeof(int16_t))/8)
 
+using namespace android;
 
 class AudioHardware : public AudioHardwareBase
 {
@@ -324,11 +325,14 @@ private:
         virtual status_t setParameters(const String8& keyValuePairs);
         virtual String8 getParameters(const String8& keys);
         virtual unsigned int getInputFramesLost() const { return 0; }
-                uint32_t device() { return mDevices; }
-                void doStandby_l();
-                void close_l();
-                status_t open_l();
-                int standbyCnt() { return mStandbyCnt; }
+        virtual status_t addAudioEffect(effect_handle_t effect) { return NO_ERROR; };
+        virtual status_t removeAudioEffect(effect_handle_t effect) { return NO_ERROR; };
+
+        uint32_t device() { return mDevices; }
+        void doStandby_l();
+        void close_l();
+        status_t open_l();
+        int standbyCnt() { return mStandbyCnt; }
 
         static size_t getBufferSize(uint32_t sampleRate, int channelCount);
 

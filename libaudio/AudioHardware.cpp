@@ -41,8 +41,9 @@ extern "C" {
 #include "alsa_audio.h"
 }
 
+namespace android_audio_legacy {
 
-namespace android {
+using namespace android;
 
 const uint32_t AudioHardware::inputSamplingRates[] = {
         8000, 11025, 16000, 22050, 44100
@@ -217,6 +218,7 @@ AudioHardware::~AudioHardware()
         TRACE_DRIVER_OUT
     }
 
+#if 0
     if (mSecRilLibHandle) {
         if (disconnectRILD(mRilClient) != RIL_CLIENT_ERR_SUCCESS)
             LOGE("Disconnect_RILD() error");
@@ -229,6 +231,7 @@ AudioHardware::~AudioHardware()
         dlclose(mSecRilLibHandle);
         mSecRilLibHandle = NULL;
     }
+#endif
 
     mInit = false;
 }
@@ -240,6 +243,7 @@ status_t AudioHardware::initCheck()
 
 void AudioHardware::loadRILD(void)
 {
+#if 0
     mSecRilLibHandle = dlopen("libsecril-client.so", RTLD_NOW);
 
     if (mSecRilLibHandle) {
@@ -281,6 +285,7 @@ void AudioHardware::loadRILD(void)
     } else {
         LOGE("Can't load libsecril-client.so");
     }
+#endif
 }
 
 status_t AudioHardware::connectRILDIfRequired(void)
