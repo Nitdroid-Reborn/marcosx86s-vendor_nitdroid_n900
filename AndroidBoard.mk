@@ -4,6 +4,7 @@ include $(CLEAR_VARS)
 
 # Misc
 PRODUCT_COPY_FILES += \
+	$(LOCAL_PATH)/etc/apns-conf.xml:/system/etc/apns-conf.xml\
 	$(LOCAL_PATH)/busybox/busybox:$(TARGET_ROOT_OUT)/bin/busybox \
 	$(LOCAL_PATH)/init.rc:$(TARGET_ROOT_OUT)/init.rc \
 	$(LOCAL_PATH)/init.nokia.rc:$(TARGET_ROOT_OUT)/init.nokia.rc \
