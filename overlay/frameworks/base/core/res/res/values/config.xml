@@ -31,7 +31,7 @@
     <integer name="config_defaultNotificationLedOff">9000</integer>
 
     <!-- Our amoled doesn't animate well. -->
-    <bool name="config_animateScreenLights">true</bool>
+    <bool name="config_animateScreenLights">false</bool>
 
     <integer name="config_deskDockKeepsScreenOn">0</integer>
     <integer name="config_carDockKeepsScreenOn">1</integer>
@@ -56,7 +56,7 @@
 
     <!-- If true, the screen can be rotated via the accelerometer in all 4
          rotations as the default behavior. -->
-    <bool name="config_allowAllRotations">true</bool>
+    <bool name="config_allowAllRotations">false</bool>
 
     <!-- If true, the direction rotation is applied to get to an application's requested
          orientation is reversed.  Normally, the model is that landscape is
@@ -64,10 +64,10 @@
          landscape will cause a clockwise rotation, and on a landscape device an
          app requesting portrait will cause a counter-clockwise rotation.  Setting
          true here reverses that logic. -->
-    <bool name="config_reverseDefaultRotation">true</bool>
+    <bool name="config_reverseDefaultRotation">false</bool>
 
     <!-- The number of degrees to rotate the display when the keyboard is open. -->
-    <integer name="config_lidOpenRotation">0</integer>
+    <integer name="config_lidOpenRotation">270</integer>
 
     <!-- The default iface on which to monitor data use -->
     <string name="config_datause_iface">gprs0</string>
