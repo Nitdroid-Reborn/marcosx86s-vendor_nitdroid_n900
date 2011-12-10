@@ -18,7 +18,7 @@
 
 # Basic Parameters
 touch.deviceType = touchScreen
-touch.orientationAware = 0
+touch.orientationAware = 1
 
 # Size
 touch.size.calibration = diameter
