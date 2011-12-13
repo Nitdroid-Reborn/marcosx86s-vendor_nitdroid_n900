@@ -1,0 +1,12 @@
+#!/bin/sh
+
+JAIL_FUNC=JAIL
+
+JAIL()
+{
+    test -d /var/run/dbus || mkdir /var/run/dbus
+	exec /usr/bin/dbus-daemon --system --nofork
+}
+
+source ${DROID}/system/maemo/etc/config.sh
+

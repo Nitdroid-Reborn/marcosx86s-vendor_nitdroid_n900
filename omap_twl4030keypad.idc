@@ -16,9 +16,6 @@
 # Emulator keyboard configuration file #1.
 #
 
-touch.deviceType = touchScreen
-touch.orientationAware = 1
-
 keyboard.layout = omap_twl4030keypad
 keyboard.characterMap = omap_twl4030keypad
 keyboard.orientationAware = 1
