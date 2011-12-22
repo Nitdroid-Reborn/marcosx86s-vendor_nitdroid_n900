@@ -23,7 +23,7 @@ BOARD_HAVE_BLUETOOTH	:= true
 # Enable TI/OMX
 HARDWARE_OMX := true
 
-USE_CAMERA_STUB		:= false
+USE_CAMERA_STUB		:= true
 BOARD_USES_N900_CAMERA_HAL := true
 #BOARD_USES_TI_CAMERA_HAL := true
 
@@ -48,7 +48,17 @@ BUILD_JPEG_DECODER:= true
 endif
 
 CUSTOM_MODULES := libglib-2.0 libcmtspeechdata ofonod libofono-ril
-CUSTOM_MODULES += sensors.nokia lights.nokia
+CUSTOM_MODULES += sensors.nokia lights.nokia gps.nokia
+
+CUSTOM_MODULES += libbridge dspexec \
+	libOMX_Core libLCML \
+	libOMX.TI.AAC.decode libOMX.TI.AAC.encode \
+	libOMX.TI.MP3.decode libOMX.TI.WMA.decode \
+	libOMX.TI.AMR.decode libOMX.TI.AMR.encode \
+	libOMX.TI.WBAMR.decode libOMX.TI.WBAMR.encode \
+	libOMX.TI.Video.Decoder libOMX.TI.Video.encoder \
+	libOMX.TI.JPEG.Encoder
+#
 
 # GPS related defines
 BOARD_HAVE_FAKE_GPS := true

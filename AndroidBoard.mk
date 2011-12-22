@@ -2,30 +2,37 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
+# This device is xhdpi.  However the platform doesn't
+# currently contain all of the bitmaps at xhdpi density so
+# we do this little trick to fall back to the hdpi version
+# if the xhdpi doesn't exist.
+#PRODUCT_AAPT_CONFIG := normal hdpi
+#PRODUCT_AAPT_PREF_CONFIG := hdpi
+
 # Misc
 PRODUCT_COPY_FILES += \
-	$(LOCAL_PATH)/etc/apns-conf.xml:/system/etc/apns-conf.xml\
-	$(LOCAL_PATH)/busybox/busybox:$(TARGET_ROOT_OUT)/bin/busybox \
-	$(LOCAL_PATH)/init.rc:$(TARGET_ROOT_OUT)/init.rc \
-	$(LOCAL_PATH)/init.nokia.rc:$(TARGET_ROOT_OUT)/init.nokia.rc \
-	$(LOCAL_PATH)/etc/vold.fstab:$(LOCAL_PATH)/etc/vold.fstab \
-	$(LOCAL_PATH)/etc/switchswap.sh:$(TARGET_ROOT_OUT)/system/etc/switchswap.sh \
-	$(LOCAL_PATH)/system/xbin/rr:$(TARGET_ROOT_OUT)/system/xbin/rr \
-	$(LOCAL_PATH)/etc/modem.conf:$(TARGET_ROOT_OUT)/system/etc/modem.conf \
-	$(LOCAL_PATH)/etc/gps.conf:$(TARGET_ROOT_OUT)/system/etc/gps.conf \
-	$(LOCAL_PATH)/etc/asound.conf:$(TARGET_ROOT_OUT)/system/etc/asound.conf \
-	$(LOCAL_PATH)/etc/init.nokia.sh:$(TARGET_ROOT_OUT)/system/etc/init.nokia.sh \
-	$(LOCAL_PATH)/ueventd.nokia.rc:$(TARGET_ROOT_OUT)/ueventd.nokia.rc \
-	$(LOCAL_PATH)/etc/dhcpcd/dhcpcd.conf:$(TARGET_ROOT_OUT)/system/etc/dhcpcd/dhcpcd.conf \
-	$(LOCAL_PATH)/etc/wifi/wpa_supplicant.conf:$(TARGET_ROOT_OUT)/system/etc/wifi/wpa_supplicant.conf \
-	$(LOCAL_PATH)/system/maemo/bin/bme:$(TARGET_ROOT_OUT)/system/maemo/bin/bme \
-	$(LOCAL_PATH)/system/maemo/bin/bq27:$(TARGET_ROOT_OUT)/system/maemo/bin/bq27 \
-	$(LOCAL_PATH)/system/maemo/bin/dsme:$(TARGET_ROOT_OUT)/system/maemo/bin/dsme \
-	$(LOCAL_PATH)/system/maemo/bin/init_subsys:$(TARGET_ROOT_OUT)/system/maemo/bin/init_subsys \
-	$(LOCAL_PATH)/system/maemo/bin/klogd:$(TARGET_ROOT_OUT)/system/maemo/bin/klogd \
-	$(LOCAL_PATH)/system/maemo/etc/android.sh:$(TARGET_ROOT_OUT)/system/maemo/etc/android.sh \
-	$(LOCAL_PATH)/system/maemo/etc/config.sh:$(TARGET_ROOT_OUT)/system/maemo/etc/config.sh \
-	$(LOCAL_PATH)/system/maemo/bin/wifi:$(TARGET_ROOT_OUT)/system/maemo/bin/wifi
+	$(LOCAL_PATH)/busybox/busybox:root/bin/busybox \
+	$(LOCAL_PATH)/init.rc:root/init.rc \
+	$(LOCAL_PATH)/init.nokia.rc:root/init.nokiarx-51board.rc \
+	$(LOCAL_PATH)/ueventd.nokia.rc:root/ueventd.nokia-rx51board.rc \
+	$(LOCAL_PATH)/etc/media_profiles.xml:system/etc/media_profiles.xml \
+	$(LOCAL_PATH)/etc/vold.fstab:system/etc/vold.fstab \
+	$(LOCAL_PATH)/etc/switchswap.sh:system/etc/switchswap.sh \
+	$(LOCAL_PATH)/etc/modem.conf:system/etc/modem.conf \
+	$(LOCAL_PATH)/etc/gps.conf:system/etc/gps.conf \
+	$(LOCAL_PATH)/etc/init.nokia.sh:system/etc/init.nokia.sh \
+	$(LOCAL_PATH)/etc/dhcpcd/dhcpcd.conf:system/etc/dhcpcd/dhcpcd.conf \
+	$(LOCAL_PATH)/etc/wifi/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
+	$(LOCAL_PATH)/system/xbin/rr:system/xbin/rr \
+	$(LOCAL_PATH)/system/maemo/bin/bme:system/maemo/bin/bme \
+	$(LOCAL_PATH)/system/maemo/bin/bq27:system/maemo/bin/bq27 \
+	$(LOCAL_PATH)/system/maemo/bin/dsme:system/maemo/bin/dbus \
+	$(LOCAL_PATH)/system/maemo/bin/dsme:system/maemo/bin/dsme \
+	$(LOCAL_PATH)/system/maemo/bin/init_subsys:system/maemo/bin/init_subsys \
+	$(LOCAL_PATH)/system/maemo/bin/klogd:system/maemo/bin/klogd \
+	$(LOCAL_PATH)/system/maemo/etc/android.sh:system/maemo/etc/android.sh \
+	$(LOCAL_PATH)/system/maemo/etc/config.sh:system/maemo/etc/config.sh \
+	$(LOCAL_PATH)/system/maemo/bin/wifi:system/maemo/bin/wifi
 ##
 
 # Input device calibration files
@@ -44,4 +51,13 @@ PRODUCT_COPY_FILES += \
 # Keycharmaps
 PRODUCT_COPY_FILES += \
 	$(LOCAL_PATH)/omap_twl4030keypad.kcm:$(TARGET_OUT_KEYCHARS)/omap_twl4030keypad.kcm
+##
+
+# Permissions
+PRODUCT_COPY_FILES += \
+    frameworks/base/data/etc/handheld_core_hardware.xml:system/etc/permissions/handheld_core_hardware.xml \
+    frameworks/base/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml \
+    frameworks/base/data/etc/android.hardware.telephony.gsm.xml:system/etc/permissions/android.hardware.telephony.gsm.xml \
+    frameworks/base/data/etc/android.hardware.location.gps.xml:system/etc/permissions/android.hardware.location.gps.xml \
+    frameworks/base/data/etc/android.software.sip.voip.xml:system/etc/permissions/android.software.sip.voip.xml \
 ##
