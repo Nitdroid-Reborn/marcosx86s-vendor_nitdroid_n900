@@ -43,14 +43,14 @@ PRODUCT_COPY_FILES += \
 
 # Keylayouts
 PRODUCT_COPY_FILES += \
-	$(LOCAL_PATH)/omap_twl4030keypad.kl:$(TARGET_OUT_KEYLAYOUT)/omap_twl4030keypad.kl \
-	$(LOCAL_PATH)/triton2-pwrbutton.kl:$(TARGET_OUT_KEYLAYOUT)/triton2-pwrbutton.kl \
-	$(LOCAL_PATH)/gpio-keys.kl:$(TARGET_OUT_KEYLAYOUT)/gpio-keys.kl \
+	$(LOCAL_PATH)/omap_twl4030keypad.kl:system/usr/keylayout/omap_twl4030keypad.kl \
+	$(LOCAL_PATH)/triton2-pwrbutton.kl:system/usr/keylayout/triton2-pwrbutton.kl \
+	$(LOCAL_PATH)/gpio-keys.kl:system/usr/keylayout/gpio-keys.kl \
 ##
 
 # Keycharmaps
 PRODUCT_COPY_FILES += \
-	$(LOCAL_PATH)/omap_twl4030keypad.kcm:$(TARGET_OUT_KEYCHARS)/omap_twl4030keypad.kcm
+	$(LOCAL_PATH)/omap_twl4030keypad.kcm:system/usr/keychars/omap_twl4030keypad.kcm
 ##
 
 # Permissions
