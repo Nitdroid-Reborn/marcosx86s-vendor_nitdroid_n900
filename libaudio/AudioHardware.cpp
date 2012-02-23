@@ -104,6 +104,7 @@ static void setMixerCtl(const char *name, const char *value)
     ctl = get_ctl(mixer, name);
     if (!ctl) {
         LOGE("can't find mixer ctl: %s", name);
+        return;
     }
 
     if (isdigit(*value))
