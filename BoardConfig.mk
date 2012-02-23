@@ -4,15 +4,15 @@
 #
 
 # The generic product target doesn't have any hardware-specific pieces.
-TARGET_NO_BOOTLOADER := true
-TARGET_NO_KERNEL := true
 TARGET_CPU_ABI := armeabi-v7a
 TARGET_CPU_ABI2 := armeabi
 TARGET_BOARD_PLATFORM := omap3
 TARGET_ARCH_VARIANT	:= armv7-a-neon
-TARGET_GLOBAL_CFLAGS += -mtune=cortex-a8
-TARGET_GLOBAL_CPPFLAGS += -mtune=cortex-a8
+TARGET_GLOBAL_CFLAGS += -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp
+TARGET_GLOBAL_CPPFLAGS += -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp
 
+TARGET_NO_BOOTLOADER := true
+TARGET_NO_KERNEL := true
 TARGET_NO_RECOVERY	:= true
 TARGET_PROVIDES_INIT_RC := true
 TARGET_NO_RADIOIMAGE := true
@@ -23,8 +23,8 @@ BOARD_HAVE_BLUETOOTH	:= true
 # Enable TI/OMX
 HARDWARE_OMX := true
 
-USE_CAMERA_STUB		:= true
-#BOARD_USES_N900_CAMERA_HAL := true
+USE_CAMERA_STUB		:= false
+BOARD_USES_N900_CAMERA_HAL := true
 #BOARD_USES_TI_CAMERA_HAL := true
 
 BOARD_USES_GENERIC_AUDIO:= false
