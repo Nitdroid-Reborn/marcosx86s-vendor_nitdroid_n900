@@ -48,7 +48,7 @@ BUILD_JPEG_DECODER:= true
 endif
 
 CUSTOM_MODULES := libglib-2.0 libcmtspeechdata ofonod libofono-ril
-CUSTOM_MODULES += sensors.nokia lights.nokia gps.nokia
+CUSTOM_MODULES += audio.primary.omap3 sensors.omap3 lights.omap3 gps.omap3
 
 CUSTOM_MODULES += libbridge dspexec \
 	libOMX_Core libLCML \
